@@ -3,104 +3,93 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#000000">
 <title>MorozLauncherTV</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
   :root {
     --accent: #0070d1;
-    --accent-glow: rgba(0,112,209,0.6);
+    --accent-glow: rgba(0,112,209,0.4);
     --text: #ffffff;
     --dim: rgba(255,255,255,0.6);
-    /* Плавная пружинная анимация как в консолях */
     --spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
     --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  /* ТЕМЫ */
-  body[data-theme="blue"]   { --accent: #0070d1; --accent-glow: rgba(0,112,209,0.6); }
-  body[data-theme="red"]    { --accent: #e50914; --accent-glow: rgba(229,9,20,0.6); }
-  body[data-theme="green"]  { --accent: #1db954; --accent-glow: rgba(29,185,84,0.6); }
-  body[data-theme="purple"] { --accent: #9146ff; --accent-glow: rgba(145,70,255,0.6); }
-  body[data-theme="orange"] { --accent: #ff6a00; --accent-glow: rgba(255,106,0,0.6); }
-  body[data-theme="cyan"]   { --accent: #00d4ff; --accent-glow: rgba(0,212,255,0.6); }
-  body[data-theme="pink"]   { --accent: #ff2d92; --accent-glow: rgba(255,45,146,0.6); }
+  /* ТЕМЫ (цвета остались) */
+  body[data-theme="blue"]   { --accent: #0070d1; --accent-glow: rgba(0,112,209,0.4); }
+  body[data-theme="red"]    { --accent: #e50914; --accent-glow: rgba(229,9,20,0.4); }
+  body[data-theme="green"]  { --accent: #1db954; --accent-glow: rgba(29,185,84,0.4); }
+  body[data-theme="purple"] { --accent: #9146ff; --accent-glow: rgba(145,70,255,0.4); }
+  body[data-theme="orange"] { --accent: #ff6a00; --accent-glow: rgba(255,106,0,0.4); }
 
   html, body {
     width: 100vw; height: 100vh; overflow: hidden;
-    background: #000; color: var(--text);
+    background: #0a0a0f; /* Темный фон вместо размытого */
+    color: var(--text);
     font-family: 'Segoe UI', -apple-system, Roboto, sans-serif;
     user-select: none; position: fixed; top: 0; left: 0;
     display: flex; flex-direction: column;
   }
 
-  /* ================= ФОН И ЧАСТИЦЫ ================= */
+  /* ================= УПРОЩЕННЫЙ ФОН (БЕЗ BLUR) ================= */
   .bg-ambient {
     position: absolute; inset: 0; z-index: 0;
-    background: radial-gradient(circle at 50% 50%, #1a1a24 0%, #000 100%);
-    transition: background 1s var(--ease-out);
+    background: radial-gradient(circle at 50% 40%, rgba(30,30,45,1) 0%, #000 80%);
+    transition: background 0.8s var(--ease-out);
   }
+  
+  /* Убрали пульсацию и блюр, оставили просто мягкий свет */
   .bg-glow {
-    position: absolute; top: 50%; left: 50%; width: 150vw; height: 150vh;
-    transform: translate(-50%, -50%); z-index: 0; opacity: 0.4;
+    position: absolute; top: 50%; left: 50%; width: 100vw; height: 100vh;
+    transform: translate(-50%, -50%); z-index: 0; opacity: 0.15;
     background: radial-gradient(circle at center, var(--accent) 0%, transparent 60%);
-    filter: blur(100px); transition: background 0.8s var(--ease-out);
-    animation: ambientPulse 8s infinite alternate ease-in-out;
-  }
-  @keyframes ambientPulse {
-    0% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
-    100% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.5; }
+    transition: background 0.8s var(--ease-out);
   }
 
-  /* ================= ЗАГРУЗКА ================= */
+  /* ================= ЗАГРУЗКА (УПРОЩЕНА) ================= */
   #splash {
     position: fixed; inset: 0; z-index: 1000;
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
-    background: #000; transition: opacity 1s var(--ease-out);
+    background: #0a0a0f; transition: opacity 0.8s var(--ease-out);
   }
   #splash.hide { opacity: 0; pointer-events: none; }
   .splash-logo {
-    font-size: 3vw; font-weight: 300; letter-spacing: 0.8vw; color: #fff;
-    animation: splashIn 1.5s var(--spring) forwards;
+    font-size: 3vw; font-weight: 300; letter-spacing: 0.8vw;
+    animation: simpleFadeIn 1s var(--ease-out) forwards;
   }
   .splash-sub {
-    font-size: 1vw; color: var(--dim); letter-spacing: 0.5vw; opacity: 0;
-    animation: fadeIn 1.5s 0.5s var(--ease-out) forwards;
+    font-size: 1vw; color: var(--dim); letter-spacing: 0.5vw;
   }
-  .splash-loader {
-    width: 200px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 30px; overflow: hidden;
-  }
+  .splash-loader { width: 200px; height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 20px; overflow: hidden; }
   .splash-loader-bar {
-    height: 100%; width: 0%; background: var(--accent); border-radius: 2px;
-    animation: loadBar 3s var(--ease-out) forwards;
-    box-shadow: 0 0 10px var(--accent);
+    height: 100%; width: 0%; background: var(--accent);
+    animation: loadBar 2.5s var(--ease-out) forwards;
   }
-  @keyframes splashIn { from { opacity: 0; transform: translateY(20px) scale(0.95); filter: blur(10px); } to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes loadBar { 0% { width: 0%; } 50% { width: 60%; } 100% { width: 100%; } }
+  @keyframes simpleFadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes loadBar { 0% { width: 0%; } 100% { width: 100%; } }
 
   /* ================= ГЛАВНЫЙ ЭКРАН ================= */
-  #main { position: relative; z-index: 1; width: 100%; height: 100%; opacity: 0; transition: opacity 1s var(--ease-out); }
+  #main { position: relative; z-index: 1; width: 100%; height: 100%; opacity: 0; transition: opacity 0.8s var(--ease-out); }
   #main.show { opacity: 1; }
 
-  /* ВЕРХНЯЯ ПАНЕЛЬ */
+  /* ВЕРХНЯЯ ПАНЕЛЬ (Без размытия) */
   .topbar {
     position: absolute; top: 0; left: 0; width: 100%; height: 10vh;
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 4vw; z-index: 20;
-    background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+    background: linear-gradient(180deg, #0a0a0f 0%, transparent 100%);
   }
   .brand { display: flex; align-items: center; gap: 1vw; font-size: 1.6vw; font-weight: 600; letter-spacing: 0.2vw; }
-  .brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 15px var(--accent); }
+  .brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
   .top-right { display: flex; align-items: center; gap: 1.5vw; }
   .clock { font-size: 2vw; font-weight: 300; }
+  
   .avatar {
     width: 3.5vw; height: 3.5vw; border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent), #fff);
+    background: linear-gradient(135deg, var(--accent), #333);
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.5vw; font-weight: bold; color: #000;
-    box-shadow: 0 0 20px var(--accent-glow);
+    font-size: 1.5vw; font-weight: bold; color: #fff;
   }
 
   /* ЦЕНТР (ГЕРОЙ) */
@@ -108,50 +97,46 @@
     position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%);
     display: flex; flex-direction: column; align-items: center; gap: 2vh;
     z-index: 10; pointer-events: none;
-    transition: transform 0.5s var(--spring);
+    transition: transform 0.4s var(--spring);
   }
   .hero-icon-wrap {
-    position: relative;
-    width: 18vw; height: 18vw; border-radius: 3vw;
+    width: 18vw; height: 18vw; border-radius: 2vw;
     display: flex; align-items: center; justify-content: center;
-    background: rgba(255,255,255,0.05); backdrop-filter: blur(20px);
-    box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.1);
+    background: #1a1a24; /* Плоский фон вместо размытия */
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.1);
     overflow: hidden;
-    animation: floatIcon 6s infinite ease-in-out;
   }
-  @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
   .hero-icon-wrap img { width: 100%; height: 100%; object-fit: cover; }
   .hero-name {
-    font-size: 2.5vw; font-weight: 300; letter-spacing: 1px;
-    text-shadow: 0 4px 20px rgba(0,0,0,0.9);
-    animation: fadeIn 1s var(--ease-out);
+    font-size: 2.5vw; font-weight: 300;
+    text-shadow: 0 4px 10px rgba(0,0,0,1);
   }
 
   /* КАРУСЕЛЬ */
   .carousel-wrap {
     position: absolute; bottom: 12vh; left: 0; width: 100%; height: 16vw;
     display: flex; align-items: center; justify-content: center;
-    z-index: 15; pointer-events: none;
-    overflow: hidden;
+    z-index: 15; pointer-events: none; overflow: hidden;
   }
   .carousel {
     display: flex; align-items: center; gap: 2vw; padding: 0 50vw;
-    transition: transform 0.6s var(--spring);
+    transition: transform 0.5s var(--spring);
   }
   .tile {
     width: 8vw; height: 8vw; border-radius: 1.5vw;
     display: flex; align-items: center; justify-content: center;
-    background: rgba(255,255,255,0.08); backdrop-filter: blur(16px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    background: #1a1a24; /* Плоский фон */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
     flex-shrink: 0; cursor: pointer;
-    transition: all 0.5s var(--spring);
+    transition: all 0.4s var(--spring);
     overflow: hidden; opacity: 0.7;
   }
   .tile img { width: 100%; height: 100%; object-fit: cover; }
+  
   .tile.active {
     width: 12vw; height: 12vw; border-radius: 2vw;
-    box-shadow: 0 0 0 4px #fff, 0 20px 60px var(--accent-glow);
-    transform: translateY(-20px); opacity: 1;
+    box-shadow: 0 0 0 3px #fff, 0 10px 30px var(--accent-glow);
+    transform: translateY(-15px); opacity: 1;
   }
   .tile.dim { opacity: 0.3; transform: scale(0.85); }
 
@@ -160,7 +145,7 @@
     position: absolute; bottom: 0; left: 0; width: 100%; height: 8vh;
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 4vw; z-index: 20;
-    background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+    background: linear-gradient(0deg, #0a0a0f 0%, transparent 100%);
   }
   .hints { display: flex; gap: 2vw; font-size: 1.2vw; color: var(--dim); }
   .hint { display: flex; align-items: center; gap: 0.5vw; }
@@ -171,10 +156,10 @@
     border-radius: 6px; font-size: 1vw; color: #fff; font-weight: 600; 
   }
 
-  /* ================= МЕНЮ БЫСТРЫХ ДЕЙСТВИЙ ================= */
+  /* ================= МЕНЮ (БЕЗ РАЗМЫТИЯ) ================= */
   .quick-menu-overlay {
     position: fixed; inset: 0; z-index: 900;
-    background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
+    background: rgba(0,0,0,0.8); /* Плотный темный фон вместо блюра */
     display: flex; align-items: center; justify-content: center;
     opacity: 0; pointer-events: none;
     transition: opacity 0.3s var(--ease-out);
@@ -182,39 +167,38 @@
   .quick-menu-overlay.show { opacity: 1; pointer-events: auto; }
   
   .quick-menu {
-    background: rgba(20,20,28,0.95);
+    background: #121218;
     border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 2vw; padding: 3vw;
-    display: flex; flex-direction: column; gap: 1.5vw;
-    transform: scale(0.9) translateY(20px); opacity: 0;
-    transition: all 0.4s var(--spring);
-    box-shadow: 0 30px 100px rgba(0,0,0,0.9);
+    border-radius: 1.5vw; padding: 2vw;
+    display: flex; flex-direction: column; gap: 1vw;
+    transform: scale(0.95); opacity: 0;
+    transition: all 0.3s var(--spring);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
   }
-  .quick-menu-overlay.show .quick-menu { transform: scale(1) translateY(0); opacity: 1; }
+  .quick-menu-overlay.show .quick-menu { transform: scale(1); opacity: 1; }
 
-  .quick-menu h3 { font-size: 2vw; font-weight: 300; margin-bottom: 1vw; text-align: center; }
-  
+  .quick-menu h3 { font-size: 1.8vw; font-weight: 300; margin-bottom: 0.5vw; text-align: center; }
   .quick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1vw; }
   
   .quick-btn {
-    width: 8vw; height: 8vw; border-radius: 1.5vw;
-    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    width: 7vw; height: 7vw; border-radius: 1vw;
+    background: #1a1a24; border: 1px solid rgba(255,255,255,0.05);
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5vw;
-    font-size: 1.2vw; color: #fff; cursor: pointer;
-    transition: all 0.3s var(--spring);
+    font-size: 1.1vw; color: #fff; cursor: pointer;
+    transition: all 0.2s var(--ease-out);
   }
-  .quick-btn span { font-size: 2.5vw; }
+  .quick-btn span { font-size: 2vw; }
+  
   .quick-btn:hover, .quick-btn:focus {
-    background: var(--accent); border-color: var(--accent);
-    transform: translateY(-5px) scale(1.05);
-    box-shadow: 0 15px 30px var(--accent-glow);
+    background: var(--accent);
+    transform: scale(1.05);
     outline: none;
   }
 
-  /* ================= ТОСТ ================= */
+  /* ТОСТ */
   .toast {
     position: fixed; bottom: 15vh; left: 50%; transform: translateX(-50%) translateY(20px);
-    background: rgba(20,20,26,0.98); border: 1px solid rgba(255,255,255,0.15);
+    background: #1a1a24; border: 1px solid rgba(255,255,255,0.15);
     padding: 1.5vh 3vw; border-radius: 40px; font-size: 1.5vw;
     opacity: 0; pointer-events: none; transition: all 0.3s var(--spring); z-index: 1000;
   }
@@ -223,7 +207,7 @@
 </head>
 <body data-theme="blue">
 
-<!-- Анимированный фон -->
+<!-- Фон -->
 <div class="bg-ambient"></div>
 <div class="bg-glow" id="bgGlow"></div>
 
@@ -267,24 +251,11 @@
   <div class="quick-menu">
     <h3>Быстрые действия</h3>
     <div class="quick-grid">
-      <div class="quick-btn" onclick="quickAction('settings')">
-        <span>⚙️</span> Настройки
-      </div>
-      <div class="quick-btn" onclick="quickAction('theme')">
-        <span>🎨</span> Сменить тему
-      </div>
-      <div class="quick-btn" onclick="quickAction('reload')">
-        <span>🔄</span> Обновить
-      </div>
-      <div class="quick-btn" onclick="quickAction('android')">
-        <span>🤖</span> Android
-      </div>
-      <div class="quick-btn" onclick="quickAction('random')">
-        <span>🎲</span> Рандом
-      </div>
-      <div class="quick-btn" onclick="quickAction('close')">
-        <span>❌</span> Закрыть
-      </div>
+      <div class="quick-btn" onclick="quickAction('theme')"><span>🎨</span> Тема</div>
+      <div class="quick-btn" onclick="quickAction('random')"><span>🎲</span> Рандом</div>
+      <div class="quick-btn" onclick="quickAction('reload')"><span>🔄</span> Рестарт</div>
+      <div class="quick-btn" onclick="quickAction('android')"><span>🤖</span> Android</div>
+      <div class="quick-btn" onclick="quickAction('close')"><span>❌</span> Закрыть</div>
     </div>
   </div>
 </div>
@@ -292,21 +263,18 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  /* ================= СОСТОЯНИЕ ================= */
-  const THEMES = ['blue', 'red', 'green', 'purple', 'orange', 'cyan', 'pink'];
+  const THEMES = ['blue', 'red', 'green', 'purple', 'orange'];
   let currentThemeIndex = 0;
   let apps = [];
   let currentIndex = 0;
   let holdTimer = null;
 
-  /* ================= ЗАГРУЗКА ================= */
   setTimeout(() => {
     document.getElementById('splash').classList.add('hide');
     document.getElementById('main').classList.add('show');
     initLauncher();
-  }, 3500); // Ждем 3.5 секунды, пока идет анимация загрузки
+  }, 2500); // Чуть быстрее загрузка
 
-  /* ================= ЛОГИКА ЛАУНЧЕРА ================= */
   const carousel = document.getElementById('carousel');
   const heroIcon = document.getElementById('heroIcon');
   const heroName = document.getElementById('heroName');
@@ -322,19 +290,10 @@
       heroName.textContent = 'Ошибка Android Bridge';
       return;
     }
+    try { apps = JSON.parse(AndroidBridge.getApps()); } 
+    catch { heroName.textContent = 'Ошибка чтения'; return; }
 
-    try {
-      apps = JSON.parse(AndroidBridge.getApps());
-    } catch {
-      heroName.textContent = 'Ошибка чтения приложений';
-      return;
-    }
-
-    if (!apps.length) {
-      heroName.textContent = 'Приложения не найдены';
-      return;
-    }
-
+    if (!apps.length) { heroName.textContent = 'Пусто'; return; }
     apps.sort((a, b) => a.name.localeCompare(b.name));
 
     carousel.innerHTML = '';
@@ -349,8 +308,6 @@
     setCurrent(0);
     tickClock();
     setInterval(tickClock, 1000);
-    
-    // Включаем управление пультом
     setupRemoteControl();
   }
 
@@ -359,13 +316,8 @@
     currentIndex = Math.max(0, Math.min(i, apps.length - 1));
     const app = apps[currentIndex];
 
-    // Анимация смены иконок
-    heroIcon.style.transform = 'scale(0.9)';
-    setTimeout(() => {
-      heroIcon.innerHTML = renderIcon(app.icon);
-      heroName.textContent = app.name;
-      heroIcon.style.transform = 'scale(1)';
-    }, 150);
+    heroIcon.innerHTML = renderIcon(app.icon);
+    heroName.textContent = app.name;
 
     const tiles = carousel.querySelectorAll('.tile');
     tiles.forEach((tile, idx) => {
@@ -386,112 +338,61 @@
       String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
   }
 
-  /* ================= УПРАВЛЕНИЕ ПУЛЬТОМ ================= */
   function setupRemoteControl() {
     document.addEventListener('keydown', (e) => {
-      // Если открыто меню быстрых действий
       if (document.getElementById('quickMenuOverlay').classList.contains('show')) {
         if (e.key === 'Escape' || e.key === 'Backspace') closeQuickMenu();
         return;
       }
-
       switch (e.key) {
-        case 'ArrowLeft': 
-          e.preventDefault(); 
-          setCurrent(currentIndex - 1); 
-          break;
-        case 'ArrowRight': 
-          e.preventDefault(); 
-          setCurrent(currentIndex + 1); 
-          break;
+        case 'ArrowLeft': e.preventDefault(); setCurrent(currentIndex - 1); break;
+        case 'ArrowRight': e.preventDefault(); setCurrent(currentIndex + 1); break;
         case 'Enter': 
           e.preventDefault();
-          // Запуск приложения по короткому нажатию
-          if (window.AndroidBridge && apps[currentIndex]) {
-            AndroidBridge.launchApp(apps[currentIndex].package);
-          }
+          if (window.AndroidBridge && apps[currentIndex]) AndroidBridge.launchApp(apps[currentIndex].package);
           break;
-        case 'ContextMenu':
-        case 'F2':
-          e.preventDefault();
-          openQuickMenu();
-          break;
+        case 'ContextMenu': e.preventDefault(); openQuickMenu(); break;
       }
     });
 
-    // Обработка долгого нажатия OK (Enter) для вызова меню
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        holdTimer = setTimeout(() => {
-          openQuickMenu();
-        }, 600); // 600 мс — долгое нажатие
-      }
+      if (e.key === 'Enter') holdTimer = setTimeout(() => openQuickMenu(), 600);
     });
-
     document.addEventListener('keyup', (e) => {
-      if (e.key === 'Enter') {
-        clearTimeout(holdTimer);
-      }
+      if (e.key === 'Enter') clearTimeout(holdTimer);
     });
   }
 
-  /* ================= МЕНЮ БЫСТРЫХ ДЕЙСТВИЙ ================= */
   const quickMenuOverlay = document.getElementById('quickMenuOverlay');
-
   function openQuickMenu() {
     quickMenuOverlay.classList.add('show');
-    // Фокусируемся на первой кнопке для управления пультом
-    setTimeout(() => {
-      const firstBtn = document.querySelector('.quick-btn');
-      if (firstBtn) firstBtn.focus();
-    }, 100);
+    setTimeout(() => { document.querySelector('.quick-btn').focus(); }, 50);
   }
-
-  function closeQuickMenu() {
-    quickMenuOverlay.classList.remove('show');
-  }
-
-  quickMenuOverlay.addEventListener('click', (e) => {
-    if (e.target === quickMenuOverlay) closeQuickMenu();
-  });
+  function closeQuickMenu() { quickMenuOverlay.classList.remove('show'); }
+  quickMenuOverlay.addEventListener('click', (e) => { if (e.target === quickMenuOverlay) closeQuickMenu(); });
 
   function quickAction(action) {
-    switch (action) {
-      case 'settings':
-        toast('Настройки пока в разработке');
-        break;
-      case 'theme':
-        currentThemeIndex = (currentThemeIndex + 1) % THEMES.length;
-        const newTheme = THEMES[currentThemeIndex];
-        document.body.dataset.theme = newTheme;
-        
-        // Меняем цвет свечения на фоне
-        const colors = {
-          blue: '#0070d1', red: '#e50914', green: '#1db954', 
-          purple: '#9146ff', orange: '#ff6a00', cyan: '#00d4ff', pink: '#ff2d92'
-        };
-        bgGlow.style.background = `radial-gradient(circle at center, ${colors[newTheme]} 0%, transparent 60%)`;
-        toast('Тема изменена: ' + newTheme);
-        break;
-      case 'reload':
-        location.reload();
-        break;
-      case 'android':
-        if (window.AndroidBridge) AndroidBridge.openSettings();
-        break;
-      case 'random':
-        const rand = Math.floor(Math.random() * apps.length);
-        setCurrent(rand);
-        toast('Случайное приложение: ' + apps[rand].name);
-        closeQuickMenu();
-        break;
-      case 'close':
-        closeQuickMenu();
-        break;
+    if (action === 'theme') {
+      currentThemeIndex = (currentThemeIndex + 1) % THEMES.length;
+      const newTheme = THEMES[currentThemeIndex];
+      document.body.dataset.theme = newTheme;
+      const colors = { blue: '#0070d1', red: '#e50914', green: '#1db954', purple: '#9146ff', orange: '#ff6a00' };
+      bgGlow.style.background = `radial-gradient(circle at center, ${colors[newTheme]} 0%, transparent 60%)`;
+      toast('Тема: ' + newTheme);
+    } else if (action === 'reload') {
+      location.reload();
+    } else if (action === 'android') {
+      if (window.AndroidBridge) AndroidBridge.openSettings();
+    } else if (action === 'random') {
+      const rand = Math.floor(Math.random() * apps.length);
+      setCurrent(rand);
+      toast('Рандом: ' + apps[rand].name);
+      closeQuickMenu();
+    } else if (action === 'close') {
+      closeQuickMenu();
     }
   }
 
-  /* ================= ТОСТ ================= */
   let toastTimer;
   function toast(msg) {
     const t = document.getElementById('toast');
