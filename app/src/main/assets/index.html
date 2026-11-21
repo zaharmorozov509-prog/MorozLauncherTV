@@ -21,46 +21,62 @@
   body[data-theme="purple"] { --accent: #9146ff; --accent-glow: rgba(145,70,255,0.4); }
   body[data-theme="orange"] { --accent: #ff6a00; --accent-glow: rgba(255,106,0,0.4); }
 
-  /* ОБОИ ПО УМОЛЧАНИЮ */
-  body[data-wallpaper="default"] { --bg-color: #0a0a0f; }
-  body[data-wallpaper="gradient"] { --bg-color: #1a0b2e; }
-  body[data-wallpaper="dark"] { --bg-color: #000000; }
-
   html, body { width: 100vw; height: 100vh; overflow: hidden; background: var(--bg-color); color: var(--text); font-family: 'Segoe UI', sans-serif; user-select: none; position: fixed; top: 0; left: 0; display: flex; flex-direction: column; transition: background 0.5s; }
   
-  /* Если пользователь загрузил СВОИ обои, они перекрывают фон */
-  #customWallpaper {
-    position: absolute; inset: 0; z-index: 0; 
-    background-size: cover; background-position: center;
-    display: none; opacity: 0.5; /* Затемнение, чтобы иконки было видно */
-  }
-
+  #customWallpaper { position: absolute; inset: 0; z-index: 0; background-size: cover; background-position: center; display: none; opacity: 0.4; }
   .bg-ambient { position: absolute; inset: 0; z-index: 1; background: radial-gradient(circle at 50% 40%, rgba(255,255,255,0.05) 0%, transparent 70%); pointer-events: none; }
-  .bg-glow { position: absolute; top: 50%; left: 50%; width: 100vw; height: 100vh; transform: translate(-50%, -50%); z-index: 1; opacity: 0.25; background: radial-gradient(circle at center, var(--accent) 0%, transparent 60%); transition: background 0.3s ease; pointer-events: none; }
+  .bg-glow { position: absolute; top: 50%; left: 50%; width: 100vw; height: 100vh; transform: translate(-50%, -50%); z-index: 1; opacity: 0.25; background: radial-gradient(circle at center, var(--accent) 0%, transparent 60%); transition: background 0.5s; pointer-events: none; }
 
+  /* ================= ЭКРАН ЗАГРУЗКИ ================= */
   #splash { position: fixed; inset: 0; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0a0a0f; transition: opacity 0.5s; }
   #splash.hide { opacity: 0; pointer-events: none; }
-  .splash-logo { font-size: 3vw; font-weight: 300; letter-spacing: 0.8vw; }
+  .splash-logo { font-size: 3.5vw; font-weight: 300; letter-spacing: 0.8vw; animation: fadeIn 1s ease; }
 
+  /* ================= ЭКРАН НАСТРОЙКИ (ONBOARDING) ================= */
+  #onboarding { position: fixed; inset: 0; z-index: 800; background: #0a0a0f; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s; }
+  #onboarding.hide { opacity: 0; pointer-events: none; }
+  
+  .ob-title { font-size: 3vw; margin-bottom: 2vh; font-weight: 300; text-align: center; }
+  .ob-sub { font-size: 1.5vw; color: var(--dim); margin-bottom: 4vh; text-align: center; }
+  
+  .ob-input { 
+    background: #1a1a24; border: 2px solid rgba(255,255,255,0.1); border-radius: 1vh; 
+    padding: 2vh 3vw; font-size: 2.5vw; color: #fff; outline: none; text-align: center; 
+    margin-bottom: 4vh; width: 50vw; transition: border 0.3s;
+  }
+  .ob-input:focus { border-color: var(--accent); }
+
+  .theme-selector { display: flex; gap: 2vw; margin-bottom: 6vh; }
+  .theme-opt { 
+    width: 8vh; height: 8vh; border-radius: 50%; cursor: pointer; 
+    border: 3px solid transparent; transition: transform 0.2s, border 0.2s; 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+  }
+  .theme-opt:hover, .theme-opt:focus { transform: scale(1.1); outline: none; }
+  .theme-opt.selected { border-color: #fff; transform: scale(1.15); box-shadow: 0 0 30px var(--accent-glow); }
+
+  .ob-btn {
+    background: var(--accent); color: #fff; border: none; border-radius: 1vh;
+    padding: 2vh 6vw; font-size: 2vw; font-weight: 600; cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s; outline: none;
+  }
+  .ob-btn:hover, .ob-btn:focus { transform: translateY(-3px); box-shadow: 0 10px 30px var(--accent-glow); }
+
+  /* ================= ГЛАВНЫЙ ЭКРАН ================= */
   #main { position: relative; z-index: 2; width: 100%; height: 100%; opacity: 0; transition: opacity 0.5s; display: flex; flex-direction: column; }
   #main.show { opacity: 1; }
 
   .topbar { position: relative; width: 100%; height: 10vh; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 4vw; z-index: 20; background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%); }
   .brand { display: flex; align-items: center; gap: 1vw; font-size: 1.8vh; font-weight: 600; }
   .brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
-  .top-right { display: flex; align-items: center; gap: 1.5vw; }
+  
+  .top-right { display: flex; align-items: center; gap: 2vw; }
+  .welcome-text { font-size: 2vh; font-weight: 300; color: var(--text); margin-right: 1vw; }
   .clock-box { text-align: right; line-height: 1.2; }
   .clock { font-size: 2.5vh; font-weight: 300; }
   .date { font-size: 1.5vh; color: var(--dim); }
   
-  .avatar { 
-    width: 4.5vh; height: 4.5vh; border-radius: 50%; 
-    background: linear-gradient(135deg, var(--accent), #333); 
-    display: flex; align-items: center; justify-content: center; 
-    font-size: 2vh; font-weight: bold; 
-    background-size: cover; background-position: center; 
-    border: 2px solid rgba(255,255,255,0.2);
-  }
+  .avatar { width: 5vh; height: 5vh; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #333); display: flex; align-items: center; justify-content: center; font-size: 2.2vh; font-weight: bold; background-size: cover; background-position: center; border: 2px solid rgba(255,255,255,0.2); }
 
   .content-area { flex: 1; position: relative; display: flex; flex-direction: column; justify-content: center; }
   .carousel-wrap { position: absolute; bottom: 8vh; left: 0; width: 100%; height: 18vh; display: flex; align-items: center; z-index: 15; overflow: hidden; }
@@ -88,7 +104,6 @@
   .modal-box h2 { font-size: 3vh; font-weight: 300; margin-bottom: 1vh; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 2vh;}
   
   .section-title { font-size: 1.5vh; color: var(--dim); text-transform: uppercase; letter-spacing: 2px; margin-top: 1vh; margin-bottom: 1vh; }
-  
   .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2vw; }
   .menu-btn { background: #1a1a24; border: 1px solid rgba(255,255,255,0.1); border-radius: 1.5vh; padding: 2vh; color: #fff; font-size: 1.6vh; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1vh; transition: background 0.2s, transform 0.1s; }
   .menu-btn:hover, .menu-btn.focused { background: var(--accent); outline: none; transform: scale(1.05); }
@@ -97,29 +112,59 @@
   .toast { position: fixed; bottom: 12vh; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a1a24; border: 1px solid rgba(255,255,255,0.15); padding: 1.5vh 3vw; border-radius: 40px; font-size: 2vh; opacity: 0; pointer-events: none; transition: all 0.3s; z-index: 1000; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  /* Скрытые инпуты для файлов */
   .hidden-input { display: none; }
+  .hidden { display: none !important; }
 </style>
 </head>
-<body data-theme="blue" data-wallpaper="default">
+<body data-theme="blue">
 
-<!-- Слой для кастомных обоев -->
 <div id="customWallpaper"></div>
-
 <div class="bg-ambient"></div>
 <div class="bg-glow" id="bgGlow"></div>
 
-<div id="splash"><div class="splash-logo">MorozLauncherTV</div></div>
+<!-- 1. ЗАГРУЗКА -->
+<div id="splash">
+  <div class="splash-logo" id="splashText">By Moroz</div>
+</div>
 
-<div id="main">
+<!-- 2. ПЕРВОНАЧАЛЬНАЯ НАСТРОЙКА -->
+<div id="onboarding" class="hidden">
+  <div id="obStep1">
+    <div class="ob-title">Добро пожаловать!</div>
+    <div class="ob-sub">Давай познакомимся. Как тебя зовут?</div>
+    <input type="text" id="userNameInput" class="ob-input" placeholder="Твоё имя..." maxlength="15">
+    <button class="ob-btn" onclick="nextObStep()">Далее</button>
+  </div>
+
+  <div id="obStep2" class="hidden">
+    <div class="ob-title">Выбери стиль</div>
+    <div class="ob-sub">Какой цвет тебе по душе?</div>
+    <div class="theme-selector">
+      <div class="theme-opt" style="background:#0070d1" onclick="selectTheme('blue', this)" tabindex="0"></div>
+      <div class="theme-opt" style="background:#e50914" onclick="selectTheme('red', this)" tabindex="0"></div>
+      <div class="theme-opt" style="background:#1db954" onclick="selectTheme('green', this)" tabindex="0"></div>
+      <div class="theme-opt" style="background:#9146ff" onclick="selectTheme('purple', this)" tabindex="0"></div>
+    </div>
+    <button class="ob-btn" onclick="finishOnboarding()">Поехали!</button>
+  </div>
+
+  <div id="obStep3" class="hidden">
+    <div class="ob-title">Настраиваем для вас...</div>
+    <div class="ob-sub">MorozLauncherTV готовится к запуску</div>
+  </div>
+</div>
+
+<!-- 3. ГЛАВНЫЙ ЭКРАН -->
+<div id="main" class="hidden">
   <div class="topbar">
     <div class="brand"><span class="dot"></span>MOROZ LAUNCHER</div>
     <div class="top-right">
+      <div class="welcome-text" id="welcomeMsg">Добро пожаловать!</div>
       <div class="clock-box" id="clockBox">
         <div class="clock" id="clock">00:00</div>
         <div class="date" id="date">Дата</div>
       </div>
-      <div class="avatar" id="avatarImg">M</div>
+      <div class="avatar" id="avatarImg">?</div>
     </div>
   </div>
 
@@ -157,8 +202,6 @@
 <div class="modal-overlay" id="settingsMenu">
   <div class="modal-box">
     <h2>Настройки</h2>
-    
-    <!-- ТЕМЫ -->
     <div class="section-title">Цветовая тема</div>
     <div class="menu-grid">
       <div class="menu-btn" onclick="setTheme('blue')">🔵 Синяя</div>
@@ -166,36 +209,16 @@
       <div class="menu-btn" onclick="setTheme('green')">🟢 Зеленая</div>
       <div class="menu-btn" onclick="setTheme('purple')">🟣 Фиолет</div>
     </div>
-
-    <!-- ОБОИ -->
-    <div class="section-title">Обои экрана</div>
+    <div class="section-title">Обои и Аватар</div>
     <div class="menu-grid">
-      <div class="menu-btn" onclick="setWallpaper('default')">🌌 Стандарт</div>
-      <div class="menu-btn" onclick="setWallpaper('gradient')">🌆 Градиент</div>
-      <div class="menu-btn" onclick="document.getElementById('fileWallpaper').click()">📸 Своё фото</div>
-      <div class="menu-btn" onclick="resetWallpaper()">🗑 Сброс фото</div>
+      <div class="menu-btn" onclick="document.getElementById('fileWallpaper').click()">📸 Обои</div>
+      <div class="menu-btn" onclick="document.getElementById('fileAvatar').click()">🖼 Аватар</div>
+      <div class="menu-btn" onclick="action('reset')">🔄 Сброс</div>
     </div>
-
-    <!-- АВАТАРКА -->
-    <div class="section-title">Аватарка профиля</div>
-    <div class="menu-grid">
-      <div class="menu-btn" onclick="document.getElementById('fileAvatar').click()">🖼 Загрузить фото</div>
-      <div class="menu-btn" onclick="resetAvatar()">🗑 Убрать фото</div>
-    </div>
-
-    <!-- ЧАСЫ -->
-    <div class="section-title">Время и Дата</div>
-    <div class="menu-grid">
-      <div class="menu-btn" onclick="toggleClock()" id="btnClock">🕒 Скрыть часы</div>
-      <div class="menu-btn" onclick="toggleTimeFormat()" id="btnFormat">🕛 24-часа</div>
-      <div class="menu-btn" onclick="action('reset')">🔄 Сброс всего</div>
-    </div>
-
     <div class="menu-btn" style="margin-top: 2vh; background: rgba(255,255,255,0.1);" onclick="closeModals()">🔙 Закрыть</div>
   </div>
 </div>
 
-<!-- СКРЫТЫЕ ИНПУТЫ ДЛЯ ФАЙЛОВ -->
 <input type="file" id="fileWallpaper" accept="image/*" class="hidden-input" onchange="handleWallpaperUpload(event)">
 <input type="file" id="fileAvatar" accept="image/*" class="hidden-input" onchange="handleAvatarUpload(event)">
 
@@ -204,41 +227,105 @@
 <script>
   // === СОСТОЯНИЕ ===
   let settings = {
+    name: localStorage.getItem('userName') || '',
     theme: localStorage.getItem('theme') || 'blue',
-    wallpaper: localStorage.getItem('wallpaper') || 'default',
-    showClock: localStorage.getItem('showClock') !== 'false',
-    time24h: localStorage.getItem('time24h') !== 'false'
+    hasSetup: localStorage.getItem('hasSetup') === 'true'
   };
   
   let apps = [];
   let currentIndex = 0;
   let holdTimer = null;
+  let selectedTheme = settings.theme;
 
-  // Применяем настройки при загрузке
+  // === ЛОГИКА ЗАПУСКА ===
   document.body.dataset.theme = settings.theme;
-  document.body.dataset.wallpaper = settings.wallpaper;
-  updateClockButton();
-  updateFormatButton();
-  
-  // Восстанавливаем кастомные картинки
+
+  // Восстанавливаем фото
   const savedWallpaper = localStorage.getItem('customWallpaper');
   if (savedWallpaper) {
     document.getElementById('customWallpaper').style.backgroundImage = `url(${savedWallpaper})`;
     document.getElementById('customWallpaper').style.display = 'block';
   }
-  
-  const savedAvatar = localStorage.getItem('customAvatar');
-  if (savedAvatar) {
-    document.getElementById('avatarImg').style.backgroundImage = `url(${savedAvatar})`;
-    document.getElementById('avatarImg').innerText = '';
+
+  // Старт приложения
+  window.onload = () => {
+    setTimeout(() => {
+      document.getElementById('splash').classList.add('hide');
+      
+      if (!settings.hasSetup) {
+        // ПЕРВЫЙ ЗАПУСК
+        document.getElementById('onboarding').classList.remove('hidden');
+        document.getElementById('userNameInput').focus();
+      } else {
+        // ВТОРОЙ И ПОСЛЕДУЮЩИЕ ЗАПУСКИ
+        startMainApp();
+      }
+    }, 2000); // 2 секунды на экран "By Moroz"
+  };
+
+  /* === ONBOARDING === */
+  function nextObStep() {
+    const name = document.getElementById('userNameInput').value.trim();
+    if (!name) { toast('Пожалуйста, введи имя'); return; }
+    settings.name = name;
+    
+    document.getElementById('obStep1').classList.add('hidden');
+    document.getElementById('obStep2').classList.remove('hidden');
+    // Автоматически выбираем текущую тему в списке
+    const themes = document.querySelectorAll('.theme-opt');
+    const idx = ['blue', 'red', 'green', 'purple'].indexOf(selectedTheme);
+    if(themes[idx]) themes[idx].classList.add('selected');
   }
 
-  setTimeout(() => {
-    document.getElementById('splash').classList.add('hide');
+  function selectTheme(theme, el) {
+    selectedTheme = theme;
+    document.querySelectorAll('.theme-opt').forEach(t => t.classList.remove('selected'));
+    el.classList.add('selected');
+    document.body.dataset.theme = theme; // Меняем цвет сразу
+  }
+
+  function finishOnboarding() {
+    settings.theme = selectedTheme;
+    document.body.dataset.theme = selectedTheme;
+    localStorage.setItem('theme', selectedTheme);
+    localStorage.setItem('userName', settings.name);
+    
+    document.getElementById('obStep2').classList.add('hidden');
+    document.getElementById('obStep3').classList.remove('hidden');
+
+    // Показываем "Настраиваем для вас..." 2.5 секунды
+    setTimeout(() => {
+      localStorage.setItem('hasSetup', 'true');
+      settings.hasSetup = true;
+      document.getElementById('onboarding').classList.add('hide');
+      setTimeout(() => document.getElementById('onboarding').classList.add('hidden'), 500);
+      startMainApp();
+    }, 2500);
+  }
+
+  /* === ГЛАВНОЕ ПРИЛОЖЕНИЕ === */
+  function startMainApp() {
+    document.getElementById('main').classList.remove('hidden');
     document.getElementById('main').classList.add('show');
-    if(!settings.showClock) document.getElementById('clockBox').style.visibility = 'hidden';
+    
+    // Настройка приветствия
+    document.getElementById('welcomeMsg').innerText = `Добро пожаловать, ${settings.name}!`;
+    
+    // Настройка аватарки (первая буква имени)
+    const avatarEl = document.getElementById('avatarImg');
+    const savedAvatar = localStorage.getItem('customAvatar');
+    if (savedAvatar) {
+      avatarEl.style.backgroundImage = `url(${savedAvatar})`;
+      avatarEl.innerText = '';
+    } else {
+      avatarEl.style.backgroundImage = 'none';
+      avatarEl.innerText = settings.name.charAt(0).toUpperCase();
+    }
+
     initLauncher();
-  }, 1500);
+    tickClock();
+    setInterval(tickClock, 1000);
+  }
 
   const carousel = document.getElementById('carousel');
   const heroIcon = document.getElementById('heroIcon');
@@ -252,7 +339,6 @@
     if (!window.AndroidBridge) return;
     try { apps = JSON.parse(AndroidBridge.getApps()); } catch { return; }
     if (!apps.length) return;
-    
     apps.sort((a, b) => a.name.localeCompare(b.name));
 
     carousel.innerHTML = '';
@@ -263,10 +349,7 @@
       tile.onclick = () => { setCurrent(i); openApp(app); };
       carousel.appendChild(tile);
     });
-
     setCurrent(0);
-    setInterval(tickClock, 1000);
-    tickClock();
     setupControls();
   }
 
@@ -274,7 +357,6 @@
     if (!apps.length) return;
     currentIndex = Math.max(0, Math.min(i, apps.length - 1));
     const app = apps[currentIndex];
-
     heroIcon.innerHTML = renderIcon(app.icon);
     heroName.textContent = app.name;
 
@@ -294,12 +376,8 @@
   function openApp(app) { if (window.AndroidBridge) AndroidBridge.launchApp(app.package); }
 
   function tickClock() {
-    if (!settings.showClock) return;
     const now = new Date();
-    let hours = now.getHours();
-    if (!settings.time24h) hours = hours % 12 || 12;
-    
-    document.getElementById('clock').textContent = String(hours).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+    document.getElementById('clock').textContent = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
     document.getElementById('date').textContent = now.toLocaleDateString('ru-RU', { weekday: 'short', day: 'numeric', month: 'short' });
   }
 
@@ -326,53 +404,12 @@
       const base64 = e.target.result;
       const avatarEl = document.getElementById('avatarImg');
       avatarEl.style.backgroundImage = `url(${base64})`;
-      avatarEl.innerText = ''; // Убираем букву "M"
+      avatarEl.innerText = ''; 
       localStorage.setItem('customAvatar', base64);
       toast('Аватарка обновлена!');
     };
     reader.readAsDataURL(file);
   }
-
-  function resetWallpaper() {
-    localStorage.removeItem('customWallpaper');
-    document.getElementById('customWallpaper').style.display = 'none';
-    toast('Обои сброшены');
-  }
-
-  function resetAvatar() {
-    localStorage.removeItem('customAvatar');
-    const avatarEl = document.getElementById('avatarImg');
-    avatarEl.style.backgroundImage = 'none';
-    avatarEl.innerText = 'M';
-    toast('Аватарка сброшена');
-  }
-
-  /* === НАСТРОЙКИ === */
-  function setTheme(theme) {
-    settings.theme = theme; document.body.dataset.theme = theme;
-    localStorage.setItem('theme', theme); toast('Тема изменена');
-  }
-
-  function setWallpaper(wp) {
-    settings.wallpaper = wp; document.body.dataset.wallpaper = wp;
-    localStorage.setItem('wallpaper', wp); toast('Обои изменены');
-  }
-
-  function toggleClock() {
-    settings.showClock = !settings.showClock;
-    document.getElementById('clockBox').style.visibility = settings.showClock ? 'visible' : 'hidden';
-    localStorage.setItem('showClock', settings.showClock);
-    updateClockButton();
-  }
-
-  function toggleTimeFormat() {
-    settings.time24h = !settings.time24h;
-    localStorage.setItem('time24h', settings.time24h);
-    updateFormatButton(); tickClock();
-  }
-
-  function updateClockButton() { document.getElementById('btnClock').innerText = settings.showClock ? '🕒 Скрыть часы' : '🕒 Показать часы'; }
-  function updateFormatButton() { document.getElementById('btnFormat').innerText = settings.time24h ? '🕛 24-часа' : '🕛 12-часов'; }
 
   function setupControls() {
     document.addEventListener('keydown', (e) => {
@@ -382,6 +419,13 @@
         if (e.key === 'Enter') document.activeElement.click();
         return;
       }
+      
+      // Если мы на экране онбординга, блокируем управление лаунчером
+      if (!document.getElementById('onboarding').classList.contains('hidden')) {
+        if (e.key === 'Enter') document.activeElement.click();
+        return;
+      }
+
       switch (e.key) {
         case 'ArrowLeft': e.preventDefault(); setCurrent(currentIndex - 1); break;
         case 'ArrowRight': e.preventDefault(); setCurrent(currentIndex + 1); break;
@@ -389,7 +433,12 @@
         case 'ContextMenu': openModal('quickMenu'); break;
       }
     });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Enter') holdTimer = setTimeout(() => openModal('quickMenu'), 600); });
+    
+    document.addEventListener('keydown', (e) => { 
+      if (e.key === 'Enter' && document.getElementById('onboarding').classList.contains('hidden')) {
+        holdTimer = setTimeout(() => openModal('quickMenu'), 600); 
+      }
+    });
     document.addEventListener('keyup', (e) => { if (e.key === 'Enter') clearTimeout(holdTimer); });
   }
 
@@ -397,14 +446,22 @@
     document.getElementById(id).classList.add('show');
     setTimeout(() => { const btn = document.querySelector(`#${id} .menu-btn`); if (btn) btn.focus(); }, 50);
   }
-  
   function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('show')); }
 
   function action(type) {
     if (type === 'settings') { closeModals(); openModal('settingsMenu'); }
     if (type === 'close') { closeModals(); }
-    if (type === 'android') { if (window.AndroidBridge) AndroidBridge.openSettings(); }
-    if (type === 'reset') { localStorage.clear(); location.reload(); }
+    if (type === 'reset') { 
+      if(confirm('Полный сброс лаунчера (включая имя)?')) {
+        localStorage.clear(); 
+        location.reload(); 
+      }
+    }
+  }
+
+  function setTheme(theme) {
+    settings.theme = theme; document.body.dataset.theme = theme;
+    localStorage.setItem('theme', theme); toast('Тема изменена');
   }
 
   let toastTimer;
