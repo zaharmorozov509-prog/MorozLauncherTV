@@ -6,43 +6,49 @@
 <title>MorozLauncherTV</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  
   :root { 
     --accent: #0070d1; 
     --accent-glow: rgba(0,112,209,0.4); 
     --text: #ffffff; 
     --dim: rgba(255,255,255,0.6); 
     --bg-color: #0a0a0f;
+    --cursor-color: #ffffff;
   }
-  
+
   /* ТЕМЫ */
   body[data-theme="blue"]   { --accent: #0070d1; --accent-glow: rgba(0,112,209,0.4); }
   body[data-theme="red"]    { --accent: #e50914; --accent-glow: rgba(229,9,20,0.4); }
   body[data-theme="green"]  { --accent: #1db954; --accent-glow: rgba(29,185,84,0.4); }
   body[data-theme="purple"] { --accent: #9146ff; --accent-glow: rgba(145,70,255,0.4); }
-  body[data-theme="orange"] { --accent: #ff6a00; --accent-glow: rgba(255,106,0,0.4); }
-
-  html, body { width: 100vw; height: 100vh; overflow: hidden; background: var(--bg-color); color: var(--text); font-family: 'Segoe UI', sans-serif; user-select: none; position: fixed; top: 0; left: 0; display: flex; flex-direction: column; transition: background 0.5s; }
   
-  #customWallpaper { position: absolute; inset: 0; z-index: 0; background-size: cover; background-position: center; display: none; opacity: 0.4; }
-  .bg-ambient { position: absolute; inset: 0; z-index: 1; background: radial-gradient(circle at 50% 40%, rgba(255,255,255,0.05) 0%, transparent 70%); pointer-events: none; }
-  .bg-glow { position: absolute; top: 50%; left: 50%; width: 100vw; height: 100vh; transform: translate(-50%, -50%); z-index: 1; opacity: 0.25; background: radial-gradient(circle at center, var(--accent) 0%, transparent 60%); transition: background 0.5s; pointer-events: none; }
+  /* НОЧНОЙ РЕЖИМ */
+  body.night-mode { --text: #b0b0b0; --dim: rgba(255,255,255,0.3); filter: brightness(0.7); }
+
+  /* КАСТОМНЫЙ КУРСОР (Светящаяся точка) */
+  body { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="%23ffffff" opacity="0.8"/><circle cx="12" cy="12" r="10" fill="%230070d1" opacity="0.4"/></svg>') 12 12, auto; }
+
+  html, body { width: 100vw; height: 100vh; overflow: hidden; background: var(--bg-color); color: var(--text); font-family: 'Segoe UI', sans-serif; user-select: none; position: fixed; top: 0; left: 0; display: flex; flex-direction: column; transition: filter 1s; }
+  
+  #customWallpaper { position: absolute; inset: 0; z-index: 0; background-size: cover; background-position: center; display: none; opacity: 0.3; transition: opacity 1s; }
+  .bg-ambient { position: absolute; inset: 0; z-index: 1; background: radial-gradient(circle at 50% 40%, rgba(255,255,255,0.03) 0%, transparent 70%); pointer-events: none; }
+  .bg-glow { position: absolute; top: 50%; left: 50%; width: 100vw; height: 100vh; transform: translate(-50%, -50%); z-index: 1; opacity: 0.3; background: radial-gradient(circle at center, var(--accent) 0%, transparent 60%); transition: background 0.5s, opacity 1s; pointer-events: none; }
 
   /* ЗАГРУЗКА И НАСТРОЙКА */
   #splash { position: fixed; inset: 0; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0a0a0f; transition: opacity 0.5s; }
   #splash.hide { opacity: 0; pointer-events: none; }
-  .splash-logo { font-size: 3.5vw; font-weight: 300; letter-spacing: 0.8vw; }
+  .splash-logo { font-size: 3vw; font-weight: 300; letter-spacing: 0.8vw; }
 
-  #onboarding { position: relative; z-index: 1001; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  #onboarding { position: relative; z-index: 1001; display: flex; flex-direction: column; align-items: center; justify-content: center; }
   .ob-title { font-size: 3vw; margin-bottom: 2vh; font-weight: 300; text-align: center; }
   .ob-sub { font-size: 1.5vw; color: var(--dim); margin-bottom: 4vh; text-align: center; }
-  .ob-input { background: #1a1a24; border: 2px solid rgba(255,255,255,0.1); border-radius: 1vh; padding: 2vh 3vw; font-size: 2.5vw; color: #fff; outline: none; text-align: center; margin-bottom: 4vh; width: 50vw; transition: border 0.3s; }
+  .ob-input { background: #1a1a24; border: 2px solid rgba(255,255,255,0.1); border-radius: 1vh; padding: 2vh 3vw; font-size: 2.5vw; color: #fff; outline: none; text-align: center; margin-bottom: 4vh; width: 50vw; }
   .ob-input:focus { border-color: var(--accent); }
   .theme-selector { display: flex; gap: 2vw; margin-bottom: 6vh; }
-  .theme-opt { width: 8vh; height: 8vh; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: transform 0.2s, border 0.2s; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+  .theme-opt { width: 8vh; height: 8vh; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: transform 0.2s; }
   .theme-opt:hover, .theme-opt:focus { transform: scale(1.1); outline: none; }
   .theme-opt.selected { border-color: #fff; transform: scale(1.15); box-shadow: 0 0 30px var(--accent-glow); }
-  .ob-btn { background: var(--accent); color: #fff; border: none; border-radius: 1vh; padding: 2vh 6vw; font-size: 2vw; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; outline: none; }
-  .ob-btn:hover, .ob-btn:focus { transform: translateY(-3px); box-shadow: 0 10px 30px var(--accent-glow); }
+  .ob-btn { background: var(--accent); color: #fff; border: none; border-radius: 1vh; padding: 2vh 6vw; font-size: 2vw; font-weight: 600; cursor: pointer; outline: none; }
 
   /* ГЛАВНЫЙ ЭКРАН */
   #main { position: relative; z-index: 2; width: 100%; height: 100%; opacity: 0; transition: opacity 0.5s; display: flex; flex-direction: column; }
@@ -52,6 +58,11 @@
   .brand { display: flex; align-items: center; gap: 1vw; font-size: 1.8vh; font-weight: 600; }
   .brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
   .top-right { display: flex; align-items: center; gap: 2vw; }
+  
+  /* ИНФО: ПОГОДА И ПУЛЬТ */
+  .weather-box { display: flex; align-items: center; gap: 0.5vw; font-size: 2vh; font-weight: 400; color: var(--text); }
+  .battery-box { display: flex; align-items: center; gap: 0.5vw; font-size: 2vh; color: var(--dim); }
+  
   .welcome-text { font-size: 2vh; font-weight: 300; color: var(--text); margin-right: 1vw; }
   .clock-box { text-align: right; line-height: 1.2; }
   .clock { font-size: 2.5vh; font-weight: 300; }
@@ -59,17 +70,17 @@
   .avatar { width: 5vh; height: 5vh; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #333); display: flex; align-items: center; justify-content: center; font-size: 2.2vh; font-weight: bold; background-size: cover; background-position: center; border: 2px solid rgba(255,255,255,0.2); }
 
   .content-area { flex: 1; position: relative; display: flex; flex-direction: column; justify-content: center; }
-  .carousel-wrap { position: absolute; bottom: 8vh; left: 0; width: 100%; height: 18vh; display: flex; align-items: center; z-index: 15; overflow: hidden; }
   
-  /* УБРАЛИ TRANSITION ДЛЯ УСТРАНЕНИЯ ЛАГОВ */
+  /* КАРУСЕЛЬ (УБРАНЫ АНИМАЦИИ ДЛЯ УСТРАНЕНИЯ ЛАГОВ) */
+  .carousel-wrap { position: absolute; bottom: 8vh; left: 0; width: 100%; height: 18vh; display: flex; align-items: center; z-index: 15; overflow: hidden; }
   .carousel { display: flex; align-items: center; gap: 2vh; padding: 0 50vw; }
   
-  .tile { width: 12vh; height: 12vh; border-radius: 2.5vh; display: flex; align-items: center; justify-content: center; background: #1a1a24; box-shadow: 0 5px 15px rgba(0,0,0,0.5); flex-shrink: 0; overflow: hidden; opacity: 0.6; border: 2px solid transparent; transition: width 0.1s, height 0.1s, opacity 0.1s; }
+  .tile { width: 12vh; height: 12vh; border-radius: 2.5vh; display: flex; align-items: center; justify-content: center; background: #1a1a24; box-shadow: 0 5px 15px rgba(0,0,0,0.5); flex-shrink: 0; overflow: hidden; opacity: 0.6; border: 2px solid transparent; }
   .tile img { width: 100%; height: 100%; object-fit: cover; border-radius: 2.5vh; }
+  /* УБРАН TRANSITION У ACTIVE, ЧТОБЫ НЕ БЫЛО ПЛАВНОГО СДВИГА */
   .tile.active { width: 16vh; height: 16vh; border-radius: 3vh; box-shadow: 0 0 0 3px #fff, 0 10px 30px var(--accent-glow); transform: translateY(-10px); opacity: 1; }
   .tile.dim { opacity: 0.3; transform: scale(0.85); }
 
-  /* Стили для системной иконки настроек */
   .sys-tile { background: #23232f; border: 2px dashed rgba(255,255,255,0.2); }
   .sys-tile span { font-size: 6vh; }
 
@@ -92,7 +103,7 @@
   
   .section-title { font-size: 1.5vh; color: var(--dim); text-transform: uppercase; letter-spacing: 2px; margin-top: 1vh; margin-bottom: 1vh; }
   .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2vw; }
-  .menu-btn { background: #1a1a24; border: 1px solid rgba(255,255,255,0.1); border-radius: 1.5vh; padding: 2vh; color: #fff; font-size: 1.6vh; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1vh; transition: background 0.2s, transform 0.1s; }
+  .menu-btn { background: #1a1a24; border: 1px solid rgba(255,255,255,0.1); border-radius: 1.5vh; padding: 2vh; color: #fff; font-size: 1.6vh; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1vh; transition: background 0.2s; }
   .menu-btn:hover, .menu-btn:focus { background: var(--accent); outline: none; transform: scale(1.05); }
   .menu-btn span { font-size: 3vh; }
 
@@ -112,12 +123,11 @@
 <!-- ЗАГРУЗКА И НАСТРОЙКА -->
 <div id="splash">
   <div class="splash-logo" style="position: absolute; top: 10vh; font-size: 2vw; color: var(--dim); letter-spacing: 0.5vw;">By Moroz</div>
-  
   <div id="onboarding" class="hidden">
     <div id="obStep1">
       <div class="ob-title">Добро пожаловать!</div>
-      <div class="ob-sub">Давай познакомимся. Как тебя зовут?</div>
-      <input type="text" id="userNameInput" class="ob-input" placeholder="Твоё имя..." maxlength="15">
+      <div class="ob-sub">Как тебя зовут?</div>
+      <input type="text" id="userNameInput" class="ob-input" placeholder="Имя..." maxlength="15">
       <button class="ob-btn" onclick="nextObStep()">Далее</button>
     </div>
     <div id="obStep2" class="hidden">
@@ -132,8 +142,8 @@
       <button class="ob-btn" onclick="finishOnboarding()">Поехали!</button>
     </div>
     <div id="obStep3" class="hidden" style="text-align: center;">
-      <div class="ob-title" style="margin-bottom: 2vh;">Настраиваем для вас...</div>
-      <div class="ob-sub">MorozLauncherTV готовится к запуску</div>
+      <div class="ob-title" style="margin-bottom: 2vh;">Настраиваем...</div>
+      <div class="ob-sub">MorozLauncherTV готовится</div>
     </div>
   </div>
 </div>
@@ -143,7 +153,12 @@
   <div class="topbar">
     <div class="brand"><span class="dot"></span>MOROZ LAUNCHER</div>
     <div class="top-right">
-      <div class="welcome-text" id="welcomeMsg">Добро пожаловать!</div>
+      <!-- ПОГОДА -->
+      <div class="weather-box" id="weatherBox">🌤 --°</div>
+      <!-- ЗАРЯД ПУЛЬТА -->
+      <div class="battery-box">🔋 <span id="batteryLevel">--%</span></div>
+      
+      <div class="welcome-text" id="welcomeMsg">Привет!</div>
       <div class="clock-box" id="clockBox">
         <div class="clock" id="clock">00:00</div>
         <div class="date" id="date">Дата</div>
@@ -174,7 +189,6 @@
 <div class="modal-overlay" id="settingsMenu">
   <div class="modal-box">
     <h2>Настройки</h2>
-    
     <div class="section-title">Цветовая тема</div>
     <div class="menu-grid">
       <div class="menu-btn" onclick="setTheme('blue')">🔵 Синяя</div>
@@ -182,20 +196,17 @@
       <div class="menu-btn" onclick="setTheme('green')">🟢 Зеленая</div>
       <div class="menu-btn" onclick="setTheme('purple')">🟣 Фиолет</div>
     </div>
-
     <div class="section-title">Обои и Аватар</div>
     <div class="menu-grid">
-      <div class="menu-btn" onclick="document.getElementById('fileWallpaper').click()">📸 Своё фото (Обои)</div>
-      <div class="menu-btn" onclick="document.getElementById('fileAvatar').click()">🖼 Загрузить фото (Аватар)</div>
+      <div class="menu-btn" onclick="document.getElementById('fileWallpaper').click()">📸 Обои</div>
+      <div class="menu-btn" onclick="document.getElementById('fileAvatar').click()">🖼 Аватар</div>
       <div class="menu-btn" onclick="resetWallpaper()">🗑 Сброс фото</div>
       <div class="menu-btn" onclick="action('android')">🤖 Настройки Android</div>
     </div>
-
     <div class="section-title">Система</div>
     <div class="menu-grid">
-      <div class="menu-btn" onclick="action('reset')">🔄 Сброс лаунчера</div>
+      <div class="menu-btn" onclick="action('reset')">🔄 Сброс</div>
     </div>
-
     <div class="menu-btn" style="margin-top: 2vh; background: rgba(255,255,255,0.1);" onclick="closeModals()">🔙 Закрыть</div>
   </div>
 </div>
@@ -225,6 +236,50 @@
     document.getElementById('customWallpaper').style.display = 'block';
   }
 
+  // === АВТО-НОЧНОЙ РЕЖИМ ===
+  function checkNightMode() {
+    const hour = new Date().getHours();
+    if (hour >= 22 || hour < 7) {
+      document.body.classList.add('night-mode');
+    } else {
+      document.body.classList.remove('night-mode');
+    }
+  }
+  checkNightMode();
+  setInterval(checkNightMode, 60000); // Проверять каждую минуту
+
+  // === ПОГОДА ===
+  async function fetchWeather() {
+    try {
+      // Бесплатный API Open-Meteo (без ключа). Координаты Москвы по умолчанию.
+      const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=55.75&longitude=37.61&current_weather=true');
+      const data = await response.json();
+      const temp = Math.round(data.current_weather.temperature);
+      const code = data.current_weather.weathercode;
+      
+      let icon = '☀️';
+      if (code >= 1 && code <= 3) icon = '⛅';
+      if (code >= 45 && code <= 48) icon = '🌫️';
+      if (code >= 51 && code <= 67) icon = '🌧️';
+      if (code >= 71 && code <= 77) icon = '❄️';
+      if (code >= 95) icon = '⛈️';
+
+      document.getElementById('weatherBox').innerText = `${icon} +${temp}°`;
+    } catch (e) {
+      document.getElementById('weatherBox').innerText = `🌤 --°`;
+    }
+  }
+  fetchWeather();
+  setInterval(fetchWeather, 1800000); // Обновлять каждые 30 минут
+
+  // === ЗАРЯД ПУЛЬТА (Заглушка, если нет нативного кода) ===
+  if (window.AndroidBridge && window.AndroidBridge.getRemoteBattery) {
+    try {
+      const level = window.AndroidBridge.getRemoteBattery();
+      document.getElementById('batteryLevel').innerText = `${level}%`;
+    } catch(e) { document.getElementById('batteryLevel').innerText = `--%`; }
+  }
+
   // Старт приложения
   window.onload = () => {
     if (!settings.hasSetup) {
@@ -242,13 +297,10 @@
   /* === ONBOARDING === */
   function nextObStep() {
     const name = document.getElementById('userNameInput').value.trim();
-    if (!name) { toast('Пожалуйста, введи имя'); return; }
+    if (!name) { toast('Введи имя'); return; }
     settings.name = name;
     document.getElementById('obStep1').classList.add('hidden');
     document.getElementById('obStep2').classList.remove('hidden');
-    const themes = document.querySelectorAll('.theme-opt');
-    const idx = ['blue', 'red', 'green', 'purple'].indexOf(selectedTheme);
-    if(themes[idx]) themes[idx].classList.add('selected');
   }
 
   function selectTheme(theme, el) {
@@ -260,7 +312,6 @@
 
   function finishOnboarding() {
     settings.theme = selectedTheme;
-    document.body.dataset.theme = selectedTheme;
     localStorage.setItem('theme', selectedTheme);
     localStorage.setItem('userName', settings.name);
     
@@ -273,7 +324,7 @@
       document.getElementById('splash').classList.add('hide');
       setTimeout(() => document.getElementById('splash').style.display = 'none', 500);
       startMainApp();
-    }, 2500);
+    }, 2000);
   }
 
   /* === ГЛАВНОЕ ПРИЛОЖЕНИЕ === */
@@ -288,7 +339,6 @@
       avatarEl.style.backgroundImage = `url(${savedAvatar})`;
       avatarEl.innerText = '';
     } else {
-      avatarEl.style.backgroundImage = 'none';
       avatarEl.innerText = settings.name.charAt(0).toUpperCase();
     }
 
@@ -306,10 +356,7 @@
     if (!window.AndroidBridge) return;
     try { apps = JSON.parse(AndroidBridge.getApps()); } catch { return; }
     
-    // Сортируем приложения
     apps.sort((a, b) => a.name.localeCompare(b.name));
-    
-    // ДОБАВЛЯЕМ СИСТЕМНУЮ ИКОНКУ НАСТРОЕК В САМЫЙ НАЧАЛО
     apps.unshift({ name: "Настройки", package: "SYSTEM_SETTINGS", icon: "" });
 
     carousel.innerHTML = '';
@@ -335,7 +382,6 @@
     currentIndex = Math.max(0, Math.min(i, apps.length - 1));
     const app = apps[currentIndex];
 
-    // Меняем центральную иконку
     if (app.package === "SYSTEM_SETTINGS") {
       heroIcon.innerHTML = '<span>⚙️</span>';
       heroName.textContent = app.name;
@@ -350,7 +396,7 @@
       tile.classList.toggle('dim', Math.abs(idx - currentIndex) > 2);
     });
 
-    // Мгновенное центрирование (без анимации сдвига)
+    // Мгновенное центрирование (без анимации сдвига для устранения лагов)
     const activeTile = tiles[currentIndex];
     if (activeTile) {
       const offset = activeTile.offsetLeft - (window.innerWidth / 2) + (activeTile.offsetWidth / 2);
