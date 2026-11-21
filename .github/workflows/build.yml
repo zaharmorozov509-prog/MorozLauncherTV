@@ -1,7 +1,7 @@
 name: Build APK
 
 on:
-  workflow_dispatch:  # Кнопка ручного запуска
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,6 +17,10 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+
+      # 👇 ВОТ ЭТОТ ШАГ НУЖНО ДОБАВИТЬ
+      - name: Accept Android SDK licenses
+        run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug
