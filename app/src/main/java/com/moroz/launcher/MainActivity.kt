@@ -1,6 +1,9 @@
 package com.moroz.launcher
 
 import android.annotation.SuppressLint
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -47,6 +50,8 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() { /* Блокируем кнопку назад */ }
 
     inner class AppBridge {
+
+        /** Возвращает JSON-массив ВСЕХ установленных приложений с иконками */
         @JavascriptInterface
         fun getApps(): String {
             val pm = packageManager
@@ -54,8 +59,8 @@ class MainActivity : AppCompatActivity() {
             val jsonArray = JSONArray()
 
             for (app in apps) {
+                // Исключаем сам лаунчер
                 if (app.packageName == packageName) continue
-                // Оставляем только те, что можно запустить
                 if (pm.getLaunchIntentForPackage(app.packageName) == null) continue
 
                 val obj = JSONObject()
@@ -85,6 +90,7 @@ class MainActivity : AppCompatActivity() {
             return jsonArray.toString()
         }
 
+        /** Запуск приложения */
         @JavascriptInterface
         fun launchApp(packageName: String) {
             val intent = packageManager.getLaunchIntentForPackage(packageName)
@@ -94,11 +100,47 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        /** Открытие системных настроек Android */
         @JavascriptInterface
         fun openSettings() {
             val intent = Intent(android.provider.Settings.ACTION_SETTINGS)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
+        }
+
+        /**
+         * Получение уровня заряда Bluetooth-пульта.
+         * Возвращает процент (0-100) или -1, если не удалось получить.
+         */
+        @JavascriptInterface
+        fun getRemoteBattery(): Int {
+            try {
+                val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+                val bluetoothAdapter = bluetoothManager.adapter ?: return -1
+                
+                // Если Bluetooth выключен
+                if (!bluetoothAdapter.isEnabled) return -1
+                
+                // Получаем список сопряженных устройств
+                val pairedDevices = bluetoothAdapter.bondedDevices ?: return -1
+                
+                for (device in pairedDevices) {
+                    // Ищем пульт по классу устройства (обычно это PERIPHERAL или REMOTE_CONTROL)
+                    val deviceClass = device.bluetoothClass?.deviceClass
+                    if (deviceClass == android.bluetooth.BluetoothClass.Device.Major.PERIPHERAL) {
+                        // Пытаемся получить заряд через скрытый API (работает на большинстве ТВ)
+                        val method = device.javaClass.getMethod("getBatteryLevel")
+                        val batteryLevel = method.invoke(device) as Int
+                        if (batteryLevel in 0..100) {
+                            return batteryLevel
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                // Если произошла ошибка (нет разрешений, API не поддерживается), возвращаем -1
+                return -1
+            }
+            return -1
         }
     }
 }
