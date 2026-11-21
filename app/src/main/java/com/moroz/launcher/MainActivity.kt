@@ -24,8 +24,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         webView = WebView(this)
         setContentView(webView)
-
-        // Устанавливаем черный фон для WebView, чтобы не было белой вспышки при старте
         webView.setBackgroundColor(android.graphics.Color.BLACK)
 
         webView.settings.apply {
@@ -34,33 +32,21 @@ class MainActivity : AppCompatActivity() {
             allowFileAccess = true
             allowContentAccess = true
             mediaPlaybackRequiresUserGesture = false
-            
-            // 👇 КРИТИЧЕСКИ ВАЖНЫЕ НАСТРОЙКИ ДЛЯ ТВ (решают проблему с левым краем)
             useWideViewPort = true
             loadWithOverviewMode = true
             builtInZoomControls = false
             displayZoomControls = false
         }
 
-        // Чтобы ссылки открывались внутри приложения
         webView.webViewClient = WebViewClient()
-
-        // Подключаем наш "мост" для JS
         webView.addJavascriptInterface(AppBridge(), "AndroidBridge")
-        
-        // Загружаем HTML из ресурсов
         webView.loadUrl("file:///android_asset/index.html")
     }
 
-    // Отключаем кнопку "Назад", чтобы лаунчер не закрывался случайно
     @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        // Ничего не делаем
-    }
+    override fun onBackPressed() { /* Блокируем кнопку назад */ }
 
     inner class AppBridge {
-
-        /** Возвращает JSON-массив ВСЕХ установленных приложений с иконками */
         @JavascriptInterface
         fun getApps(): String {
             val pm = packageManager
@@ -68,17 +54,14 @@ class MainActivity : AppCompatActivity() {
             val jsonArray = JSONArray()
 
             for (app in apps) {
-                // Исключаем сам лаунчер из списка
                 if (app.packageName == packageName) continue
-                
-                // Берем только те, что можно запустить
+                // Оставляем только те, что можно запустить
                 if (pm.getLaunchIntentForPackage(app.packageName) == null) continue
 
                 val obj = JSONObject()
                 obj.put("name", pm.getApplicationLabel(app).toString())
                 obj.put("package", app.packageName)
                 
-                // Конвертация иконки в Base64 PNG
                 try {
                     val icon = pm.getApplicationIcon(app.packageName)
                     val bitmap = Bitmap.createBitmap(
@@ -102,7 +85,6 @@ class MainActivity : AppCompatActivity() {
             return jsonArray.toString()
         }
 
-        /** Запуск приложения по packageName */
         @JavascriptInterface
         fun launchApp(packageName: String) {
             val intent = packageManager.getLaunchIntentForPackage(packageName)
@@ -112,7 +94,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        /** Открывает системные настройки Android */
         @JavascriptInterface
         fun openSettings() {
             val intent = Intent(android.provider.Settings.ACTION_SETTINGS)
