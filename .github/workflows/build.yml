@@ -1,4 +1,4 @@
-name: Build APK
+name: APK
 
 on:
   workflow_dispatch:
@@ -21,18 +21,19 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v4
 
-      # Принятие лицензий SDK
       - name: Accept Android SDK licenses
         run: |
           yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null || true
 
-      # Автоматически создаем Gradle Wrapper, если его нет в репозитории
-      - name: Generate Gradle Wrapper
-        run: gradle wrapper
+      # 👇 ВОТ ЭТОТ ШАГ РЕШАЕТ ПРОБЛЕМУ: настраиваем Gradle 8
+      - name: Setup Gradle 8
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.5'   # Безопасная версия, совместимая с нашим Kotlin
 
-      # Даем права на запуск и собираем проект
       - name: Build Debug APK
         run: |
+          gradle wrapper --gradle-version 8.5
           chmod +x gradlew
           ./gradlew assembleDebug --stacktrace
 
