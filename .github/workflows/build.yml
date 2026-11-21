@@ -1,4 +1,4 @@
-name: Build
+name: Build APK
 
 on:
   workflow_dispatch:
@@ -18,16 +18,19 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # Используем v4, так как в старых версиях (v3) были проблемы с поиском пакетов
       - name: Setup Android SDK
         uses: android-actions/setup-android@v4
 
-      # Принудительно принимаем лицензии по правильному пути
+      # Принятие лицензий SDK
       - name: Accept Android SDK licenses
         run: |
           yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null || true
 
-      # Даем права на запуск Gradle и собираем
+      # Автоматически создаем Gradle Wrapper, если его нет в репозитории
+      - name: Generate Gradle Wrapper
+        run: gradle wrapper
+
+      # Даем права на запуск и собираем проект
       - name: Build Debug APK
         run: |
           chmod +x gradlew
