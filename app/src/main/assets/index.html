@@ -27,69 +27,56 @@
   .bg-ambient { position: absolute; inset: 0; z-index: 1; background: radial-gradient(circle at 50% 40%, rgba(255,255,255,0.05) 0%, transparent 70%); pointer-events: none; }
   .bg-glow { position: absolute; top: 50%; left: 50%; width: 100vw; height: 100vh; transform: translate(-50%, -50%); z-index: 1; opacity: 0.25; background: radial-gradient(circle at center, var(--accent) 0%, transparent 60%); transition: background 0.5s; pointer-events: none; }
 
-  /* ================= ЭКРАН ЗАГРУЗКИ ================= */
+  /* ЗАГРУЗКА И НАСТРОЙКА */
   #splash { position: fixed; inset: 0; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0a0a0f; transition: opacity 0.5s; }
   #splash.hide { opacity: 0; pointer-events: none; }
-  .splash-logo { font-size: 3.5vw; font-weight: 300; letter-spacing: 0.8vw; animation: fadeIn 1s ease; }
+  .splash-logo { font-size: 3.5vw; font-weight: 300; letter-spacing: 0.8vw; }
 
-  /* ================= ЭКРАН НАСТРОЙКИ (ONBOARDING) ================= */
-  #onboarding { position: fixed; inset: 0; z-index: 800; background: #0a0a0f; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s; }
-  #onboarding.hide { opacity: 0; pointer-events: none; }
-  
+  #onboarding { position: relative; z-index: 1001; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; }
   .ob-title { font-size: 3vw; margin-bottom: 2vh; font-weight: 300; text-align: center; }
   .ob-sub { font-size: 1.5vw; color: var(--dim); margin-bottom: 4vh; text-align: center; }
-  
-  .ob-input { 
-    background: #1a1a24; border: 2px solid rgba(255,255,255,0.1); border-radius: 1vh; 
-    padding: 2vh 3vw; font-size: 2.5vw; color: #fff; outline: none; text-align: center; 
-    margin-bottom: 4vh; width: 50vw; transition: border 0.3s;
-  }
+  .ob-input { background: #1a1a24; border: 2px solid rgba(255,255,255,0.1); border-radius: 1vh; padding: 2vh 3vw; font-size: 2.5vw; color: #fff; outline: none; text-align: center; margin-bottom: 4vh; width: 50vw; transition: border 0.3s; }
   .ob-input:focus { border-color: var(--accent); }
-
   .theme-selector { display: flex; gap: 2vw; margin-bottom: 6vh; }
-  .theme-opt { 
-    width: 8vh; height: 8vh; border-radius: 50%; cursor: pointer; 
-    border: 3px solid transparent; transition: transform 0.2s, border 0.2s; 
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-  }
+  .theme-opt { width: 8vh; height: 8vh; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: transform 0.2s, border 0.2s; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
   .theme-opt:hover, .theme-opt:focus { transform: scale(1.1); outline: none; }
   .theme-opt.selected { border-color: #fff; transform: scale(1.15); box-shadow: 0 0 30px var(--accent-glow); }
-
-  .ob-btn {
-    background: var(--accent); color: #fff; border: none; border-radius: 1vh;
-    padding: 2vh 6vw; font-size: 2vw; font-weight: 600; cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s; outline: none;
-  }
+  .ob-btn { background: var(--accent); color: #fff; border: none; border-radius: 1vh; padding: 2vh 6vw; font-size: 2vw; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; outline: none; }
   .ob-btn:hover, .ob-btn:focus { transform: translateY(-3px); box-shadow: 0 10px 30px var(--accent-glow); }
 
-  /* ================= ГЛАВНЫЙ ЭКРАН ================= */
+  /* ГЛАВНЫЙ ЭКРАН */
   #main { position: relative; z-index: 2; width: 100%; height: 100%; opacity: 0; transition: opacity 0.5s; display: flex; flex-direction: column; }
   #main.show { opacity: 1; }
 
   .topbar { position: relative; width: 100%; height: 10vh; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 4vw; z-index: 20; background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%); }
   .brand { display: flex; align-items: center; gap: 1vw; font-size: 1.8vh; font-weight: 600; }
   .brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
-  
   .top-right { display: flex; align-items: center; gap: 2vw; }
   .welcome-text { font-size: 2vh; font-weight: 300; color: var(--text); margin-right: 1vw; }
   .clock-box { text-align: right; line-height: 1.2; }
   .clock { font-size: 2.5vh; font-weight: 300; }
   .date { font-size: 1.5vh; color: var(--dim); }
-  
   .avatar { width: 5vh; height: 5vh; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #333); display: flex; align-items: center; justify-content: center; font-size: 2.2vh; font-weight: bold; background-size: cover; background-position: center; border: 2px solid rgba(255,255,255,0.2); }
 
   .content-area { flex: 1; position: relative; display: flex; flex-direction: column; justify-content: center; }
   .carousel-wrap { position: absolute; bottom: 8vh; left: 0; width: 100%; height: 18vh; display: flex; align-items: center; z-index: 15; overflow: hidden; }
+  
+  /* УБРАЛИ TRANSITION ДЛЯ УСТРАНЕНИЯ ЛАГОВ */
   .carousel { display: flex; align-items: center; gap: 2vh; padding: 0 50vw; }
   
-  .tile { width: 12vh; height: 12vh; border-radius: 2.5vh; display: flex; align-items: center; justify-content: center; background: #1a1a24; box-shadow: 0 5px 15px rgba(0,0,0,0.5); flex-shrink: 0; overflow: hidden; opacity: 0.6; border: 2px solid transparent; }
+  .tile { width: 12vh; height: 12vh; border-radius: 2.5vh; display: flex; align-items: center; justify-content: center; background: #1a1a24; box-shadow: 0 5px 15px rgba(0,0,0,0.5); flex-shrink: 0; overflow: hidden; opacity: 0.6; border: 2px solid transparent; transition: width 0.1s, height 0.1s, opacity 0.1s; }
   .tile img { width: 100%; height: 100%; object-fit: cover; border-radius: 2.5vh; }
-  .tile.active { width: 16vh; height: 16vh; border-radius: 3vh; box-shadow: 0 0 0 3px #fff, 0 10px 30px var(--accent-glow); transform: translateY(-10px); opacity: 1; transition: width 0.1s, height 0.1s; }
+  .tile.active { width: 16vh; height: 16vh; border-radius: 3vh; box-shadow: 0 0 0 3px #fff, 0 10px 30px var(--accent-glow); transform: translateY(-10px); opacity: 1; }
   .tile.dim { opacity: 0.3; transform: scale(0.85); }
+
+  /* Стили для системной иконки настроек */
+  .sys-tile { background: #23232f; border: 2px dashed rgba(255,255,255,0.2); }
+  .sys-tile span { font-size: 6vh; }
 
   .hero { display: flex; flex-direction: column; align-items: center; gap: 2vh; transform: translateY(-10%); z-index: 10; }
   .hero-icon { width: 18vh; height: 18vh; border-radius: 3.5vh; display: flex; align-items: center; justify-content: center; background: #1a1a24; box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 40px var(--accent-glow); overflow: hidden; border: 2px solid rgba(255,255,255,0.1); }
   .hero-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 3.5vh; }
+  .hero-icon span { font-size: 8vh; }
   .hero-name { font-size: 3.5vh; font-weight: 300; text-shadow: 0 4px 10px rgba(0,0,0,1); }
 
   .bottombar { position: relative; width: 100%; height: 8vh; flex-shrink: 0; display: flex; align-items: center; padding: 0 4vw; background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 100%); }
@@ -106,7 +93,7 @@
   .section-title { font-size: 1.5vh; color: var(--dim); text-transform: uppercase; letter-spacing: 2px; margin-top: 1vh; margin-bottom: 1vh; }
   .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2vw; }
   .menu-btn { background: #1a1a24; border: 1px solid rgba(255,255,255,0.1); border-radius: 1.5vh; padding: 2vh; color: #fff; font-size: 1.6vh; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1vh; transition: background 0.2s, transform 0.1s; }
-  .menu-btn:hover, .menu-btn.focused { background: var(--accent); outline: none; transform: scale(1.05); }
+  .menu-btn:hover, .menu-btn:focus { background: var(--accent); outline: none; transform: scale(1.05); }
   .menu-btn span { font-size: 3vh; }
 
   .toast { position: fixed; bottom: 12vh; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a1a24; border: 1px solid rgba(255,255,255,0.15); padding: 1.5vh 3vw; border-radius: 40px; font-size: 2vh; opacity: 0; pointer-events: none; transition: all 0.3s; z-index: 1000; }
@@ -122,39 +109,36 @@
 <div class="bg-ambient"></div>
 <div class="bg-glow" id="bgGlow"></div>
 
-<!-- 1. ЗАГРУЗКА -->
+<!-- ЗАГРУЗКА И НАСТРОЙКА -->
 <div id="splash">
-  <div class="splash-logo" id="splashText">By Moroz</div>
-</div>
-
-<!-- 2. ПЕРВОНАЧАЛЬНАЯ НАСТРОЙКА -->
-<div id="onboarding" class="hidden">
-  <div id="obStep1">
-    <div class="ob-title">Добро пожаловать!</div>
-    <div class="ob-sub">Давай познакомимся. Как тебя зовут?</div>
-    <input type="text" id="userNameInput" class="ob-input" placeholder="Твоё имя..." maxlength="15">
-    <button class="ob-btn" onclick="nextObStep()">Далее</button>
-  </div>
-
-  <div id="obStep2" class="hidden">
-    <div class="ob-title">Выбери стиль</div>
-    <div class="ob-sub">Какой цвет тебе по душе?</div>
-    <div class="theme-selector">
-      <div class="theme-opt" style="background:#0070d1" onclick="selectTheme('blue', this)" tabindex="0"></div>
-      <div class="theme-opt" style="background:#e50914" onclick="selectTheme('red', this)" tabindex="0"></div>
-      <div class="theme-opt" style="background:#1db954" onclick="selectTheme('green', this)" tabindex="0"></div>
-      <div class="theme-opt" style="background:#9146ff" onclick="selectTheme('purple', this)" tabindex="0"></div>
+  <div class="splash-logo" style="position: absolute; top: 10vh; font-size: 2vw; color: var(--dim); letter-spacing: 0.5vw;">By Moroz</div>
+  
+  <div id="onboarding" class="hidden">
+    <div id="obStep1">
+      <div class="ob-title">Добро пожаловать!</div>
+      <div class="ob-sub">Давай познакомимся. Как тебя зовут?</div>
+      <input type="text" id="userNameInput" class="ob-input" placeholder="Твоё имя..." maxlength="15">
+      <button class="ob-btn" onclick="nextObStep()">Далее</button>
     </div>
-    <button class="ob-btn" onclick="finishOnboarding()">Поехали!</button>
-  </div>
-
-  <div id="obStep3" class="hidden">
-    <div class="ob-title">Настраиваем для вас...</div>
-    <div class="ob-sub">MorozLauncherTV готовится к запуску</div>
+    <div id="obStep2" class="hidden">
+      <div class="ob-title">Выбери стиль</div>
+      <div class="ob-sub">Какой цвет тебе по душе?</div>
+      <div class="theme-selector">
+        <div class="theme-opt" style="background:#0070d1" onclick="selectTheme('blue', this)" tabindex="0"></div>
+        <div class="theme-opt" style="background:#e50914" onclick="selectTheme('red', this)" tabindex="0"></div>
+        <div class="theme-opt" style="background:#1db954" onclick="selectTheme('green', this)" tabindex="0"></div>
+        <div class="theme-opt" style="background:#9146ff" onclick="selectTheme('purple', this)" tabindex="0"></div>
+      </div>
+      <button class="ob-btn" onclick="finishOnboarding()">Поехали!</button>
+    </div>
+    <div id="obStep3" class="hidden" style="text-align: center;">
+      <div class="ob-title" style="margin-bottom: 2vh;">Настраиваем для вас...</div>
+      <div class="ob-sub">MorozLauncherTV готовится к запуску</div>
+    </div>
   </div>
 </div>
 
-<!-- 3. ГЛАВНЫЙ ЭКРАН -->
+<!-- ГЛАВНЫЙ ЭКРАН -->
 <div id="main" class="hidden">
   <div class="topbar">
     <div class="brand"><span class="dot"></span>MOROZ LAUNCHER</div>
@@ -182,18 +166,6 @@
     <div class="hints">
       <div class="hint"><span class="key">◀ ▶</span> выбор</div>
       <div class="hint"><span class="key">OK</span> открыть</div>
-      <div class="hint"><span class="key">Hold OK</span> меню</div>
-    </div>
-  </div>
-</div>
-
-<!-- МЕНЮ (Hold OK) -->
-<div class="modal-overlay" id="quickMenu">
-  <div class="modal-box" style="width: 50vw;">
-    <h2>Меню</h2>
-    <div class="menu-grid" style="grid-template-columns: repeat(2, 1fr);">
-      <div class="menu-btn" onclick="action('settings')"><span>⚙️</span> Настройки</div>
-      <div class="menu-btn" onclick="action('close')"><span>❌</span> Закрыть</div>
     </div>
   </div>
 </div>
@@ -202,6 +174,7 @@
 <div class="modal-overlay" id="settingsMenu">
   <div class="modal-box">
     <h2>Настройки</h2>
+    
     <div class="section-title">Цветовая тема</div>
     <div class="menu-grid">
       <div class="menu-btn" onclick="setTheme('blue')">🔵 Синяя</div>
@@ -209,12 +182,20 @@
       <div class="menu-btn" onclick="setTheme('green')">🟢 Зеленая</div>
       <div class="menu-btn" onclick="setTheme('purple')">🟣 Фиолет</div>
     </div>
+
     <div class="section-title">Обои и Аватар</div>
     <div class="menu-grid">
-      <div class="menu-btn" onclick="document.getElementById('fileWallpaper').click()">📸 Обои</div>
-      <div class="menu-btn" onclick="document.getElementById('fileAvatar').click()">🖼 Аватар</div>
-      <div class="menu-btn" onclick="action('reset')">🔄 Сброс</div>
+      <div class="menu-btn" onclick="document.getElementById('fileWallpaper').click()">📸 Своё фото (Обои)</div>
+      <div class="menu-btn" onclick="document.getElementById('fileAvatar').click()">🖼 Загрузить фото (Аватар)</div>
+      <div class="menu-btn" onclick="resetWallpaper()">🗑 Сброс фото</div>
+      <div class="menu-btn" onclick="action('android')">🤖 Настройки Android</div>
     </div>
+
+    <div class="section-title">Система</div>
+    <div class="menu-grid">
+      <div class="menu-btn" onclick="action('reset')">🔄 Сброс лаунчера</div>
+    </div>
+
     <div class="menu-btn" style="margin-top: 2vh; background: rgba(255,255,255,0.1);" onclick="closeModals()">🔙 Закрыть</div>
   </div>
 </div>
@@ -234,13 +215,10 @@
   
   let apps = [];
   let currentIndex = 0;
-  let holdTimer = null;
   let selectedTheme = settings.theme;
 
-  // === ЛОГИКА ЗАПУСКА ===
   document.body.dataset.theme = settings.theme;
 
-  // Восстанавливаем фото
   const savedWallpaper = localStorage.getItem('customWallpaper');
   if (savedWallpaper) {
     document.getElementById('customWallpaper').style.backgroundImage = `url(${savedWallpaper})`;
@@ -249,18 +227,16 @@
 
   // Старт приложения
   window.onload = () => {
-    setTimeout(() => {
-      document.getElementById('splash').classList.add('hide');
-      
-      if (!settings.hasSetup) {
-        // ПЕРВЫЙ ЗАПУСК
-        document.getElementById('onboarding').classList.remove('hidden');
-        document.getElementById('userNameInput').focus();
-      } else {
-        // ВТОРОЙ И ПОСЛЕДУЮЩИЕ ЗАПУСКИ
+    if (!settings.hasSetup) {
+      document.getElementById('onboarding').classList.remove('hidden');
+      document.getElementById('userNameInput').focus();
+    } else {
+      setTimeout(() => {
+        document.getElementById('splash').classList.add('hide');
+        setTimeout(() => document.getElementById('splash').style.display = 'none', 500);
         startMainApp();
-      }
-    }, 2000); // 2 секунды на экран "By Moroz"
+      }, 2000);
+    }
   };
 
   /* === ONBOARDING === */
@@ -268,10 +244,8 @@
     const name = document.getElementById('userNameInput').value.trim();
     if (!name) { toast('Пожалуйста, введи имя'); return; }
     settings.name = name;
-    
     document.getElementById('obStep1').classList.add('hidden');
     document.getElementById('obStep2').classList.remove('hidden');
-    // Автоматически выбираем текущую тему в списке
     const themes = document.querySelectorAll('.theme-opt');
     const idx = ['blue', 'red', 'green', 'purple'].indexOf(selectedTheme);
     if(themes[idx]) themes[idx].classList.add('selected');
@@ -281,7 +255,7 @@
     selectedTheme = theme;
     document.querySelectorAll('.theme-opt').forEach(t => t.classList.remove('selected'));
     el.classList.add('selected');
-    document.body.dataset.theme = theme; // Меняем цвет сразу
+    document.body.dataset.theme = theme;
   }
 
   function finishOnboarding() {
@@ -293,12 +267,11 @@
     document.getElementById('obStep2').classList.add('hidden');
     document.getElementById('obStep3').classList.remove('hidden');
 
-    // Показываем "Настраиваем для вас..." 2.5 секунды
     setTimeout(() => {
       localStorage.setItem('hasSetup', 'true');
       settings.hasSetup = true;
-      document.getElementById('onboarding').classList.add('hide');
-      setTimeout(() => document.getElementById('onboarding').classList.add('hidden'), 500);
+      document.getElementById('splash').classList.add('hide');
+      setTimeout(() => document.getElementById('splash').style.display = 'none', 500);
       startMainApp();
     }, 2500);
   }
@@ -307,11 +280,8 @@
   function startMainApp() {
     document.getElementById('main').classList.remove('hidden');
     document.getElementById('main').classList.add('show');
-    
-    // Настройка приветствия
     document.getElementById('welcomeMsg').innerText = `Добро пожаловать, ${settings.name}!`;
     
-    // Настройка аватарки (первая буква имени)
     const avatarEl = document.getElementById('avatarImg');
     const savedAvatar = localStorage.getItem('customAvatar');
     if (savedAvatar) {
@@ -325,40 +295,54 @@
     initLauncher();
     tickClock();
     setInterval(tickClock, 1000);
+    setupControls();
   }
 
   const carousel = document.getElementById('carousel');
   const heroIcon = document.getElementById('heroIcon');
   const heroName = document.getElementById('heroName');
 
-  function renderIcon(icon) {
-    return (icon && icon.startsWith('data:image')) ? `<img src="${icon}">` : '<span style="font-size: 4vh;">📱</span>';
-  }
-
   function initLauncher() {
     if (!window.AndroidBridge) return;
     try { apps = JSON.parse(AndroidBridge.getApps()); } catch { return; }
-    if (!apps.length) return;
+    
+    // Сортируем приложения
     apps.sort((a, b) => a.name.localeCompare(b.name));
+    
+    // ДОБАВЛЯЕМ СИСТЕМНУЮ ИКОНКУ НАСТРОЕК В САМЫЙ НАЧАЛО
+    apps.unshift({ name: "Настройки", package: "SYSTEM_SETTINGS", icon: "" });
 
     carousel.innerHTML = '';
     apps.forEach((app, i) => {
       const tile = document.createElement('div');
       tile.className = 'tile';
-      tile.innerHTML = renderIcon(app.icon);
+      
+      if (app.package === "SYSTEM_SETTINGS") {
+        tile.classList.add('sys-tile');
+        tile.innerHTML = '<span>⚙️</span>';
+      } else {
+        tile.innerHTML = (app.icon && app.icon.startsWith('data:image')) ? `<img src="${app.icon}">` : '<span style="font-size: 4vh;">📱</span>';
+      }
+      
       tile.onclick = () => { setCurrent(i); openApp(app); };
       carousel.appendChild(tile);
     });
     setCurrent(0);
-    setupControls();
   }
 
   function setCurrent(i) {
     if (!apps.length) return;
     currentIndex = Math.max(0, Math.min(i, apps.length - 1));
     const app = apps[currentIndex];
-    heroIcon.innerHTML = renderIcon(app.icon);
-    heroName.textContent = app.name;
+
+    // Меняем центральную иконку
+    if (app.package === "SYSTEM_SETTINGS") {
+      heroIcon.innerHTML = '<span>⚙️</span>';
+      heroName.textContent = app.name;
+    } else {
+      heroIcon.innerHTML = (app.icon && app.icon.startsWith('data:image')) ? `<img src="${app.icon}">` : '<span style="font-size: 8vh;">📱</span>';
+      heroName.textContent = app.name;
+    }
 
     const tiles = carousel.querySelectorAll('.tile');
     tiles.forEach((tile, idx) => {
@@ -366,6 +350,7 @@
       tile.classList.toggle('dim', Math.abs(idx - currentIndex) > 2);
     });
 
+    // Мгновенное центрирование (без анимации сдвига)
     const activeTile = tiles[currentIndex];
     if (activeTile) {
       const offset = activeTile.offsetLeft - (window.innerWidth / 2) + (activeTile.offsetWidth / 2);
@@ -373,7 +358,13 @@
     }
   }
 
-  function openApp(app) { if (window.AndroidBridge) AndroidBridge.launchApp(app.package); }
+  function openApp(app) {
+    if (app.package === "SYSTEM_SETTINGS") {
+      openModal('settingsMenu');
+    } else {
+      if (window.AndroidBridge) AndroidBridge.launchApp(app.package);
+    }
+  }
 
   function tickClock() {
     const now = new Date();
@@ -381,7 +372,7 @@
     document.getElementById('date').textContent = now.toLocaleDateString('ru-RU', { weekday: 'short', day: 'numeric', month: 'short' });
   }
 
-  /* === ЗАГРУЗКА ФОТО === */
+  /* === ФОТО И НАСТРОЙКИ === */
   function handleWallpaperUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -411,6 +402,12 @@
     reader.readAsDataURL(file);
   }
 
+  function resetWallpaper() {
+    localStorage.removeItem('customWallpaper');
+    document.getElementById('customWallpaper').style.display = 'none';
+    toast('Обои сброшены');
+  }
+
   function setupControls() {
     document.addEventListener('keydown', (e) => {
       const activeModal = document.querySelector('.modal-overlay.show');
@@ -420,26 +417,12 @@
         return;
       }
       
-      // Если мы на экране онбординга, блокируем управление лаунчером
-      if (!document.getElementById('onboarding').classList.contains('hidden')) {
-        if (e.key === 'Enter') document.activeElement.click();
-        return;
-      }
-
       switch (e.key) {
         case 'ArrowLeft': e.preventDefault(); setCurrent(currentIndex - 1); break;
         case 'ArrowRight': e.preventDefault(); setCurrent(currentIndex + 1); break;
         case 'Enter': e.preventDefault(); if (apps[currentIndex]) openApp(apps[currentIndex]); break;
-        case 'ContextMenu': openModal('quickMenu'); break;
       }
     });
-    
-    document.addEventListener('keydown', (e) => { 
-      if (e.key === 'Enter' && document.getElementById('onboarding').classList.contains('hidden')) {
-        holdTimer = setTimeout(() => openModal('quickMenu'), 600); 
-      }
-    });
-    document.addEventListener('keyup', (e) => { if (e.key === 'Enter') clearTimeout(holdTimer); });
   }
 
   function openModal(id) {
@@ -448,20 +431,16 @@
   }
   function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('show')); }
 
-  function action(type) {
-    if (type === 'settings') { closeModals(); openModal('settingsMenu'); }
-    if (type === 'close') { closeModals(); }
-    if (type === 'reset') { 
-      if(confirm('Полный сброс лаунчера (включая имя)?')) {
-        localStorage.clear(); 
-        location.reload(); 
-      }
-    }
-  }
-
   function setTheme(theme) {
     settings.theme = theme; document.body.dataset.theme = theme;
     localStorage.setItem('theme', theme); toast('Тема изменена');
+  }
+
+  function action(type) {
+    if (type === 'android') { if (window.AndroidBridge) AndroidBridge.openSettings(); }
+    if (type === 'reset') { 
+      if(confirm('Полный сброс лаунчера?')) { localStorage.clear(); location.reload(); }
+    }
   }
 
   let toastTimer;
