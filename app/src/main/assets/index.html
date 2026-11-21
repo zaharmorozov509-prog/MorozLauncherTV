@@ -12,14 +12,12 @@
     --accent-glow: rgba(0,112,209,0.4);
     --text: #ffffff;
     --dim: rgba(255,255,255,0.6);
-    --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
   body[data-theme="blue"]   { --accent: #0070d1; --accent-glow: rgba(0,112,209,0.4); }
   body[data-theme="red"]    { --accent: #e50914; --accent-glow: rgba(229,9,20,0.4); }
   body[data-theme="green"]  { --accent: #1db954; --accent-glow: rgba(29,185,84,0.4); }
   body[data-theme="purple"] { --accent: #9146ff; --accent-glow: rgba(145,70,255,0.4); }
-  body[data-theme="dark"]   { --accent: #333333; --accent-glow: rgba(51,51,51,0.4); }
 
   html, body {
     width: 100vw; height: 100vh; overflow: hidden;
@@ -29,176 +27,61 @@
     display: flex; flex-direction: column;
   }
 
-  /* ФОН */
-  .bg-ambient {
-    position: absolute; inset: 0; z-index: 0;
-    background: radial-gradient(circle at 50% 40%, rgba(30,30,45,1) 0%, #000 80%);
-  }
+  .bg-ambient { position: absolute; inset: 0; z-index: 0; background: radial-gradient(circle at 50% 40%, rgba(30,30,45,1) 0%, #000 80%); }
   .bg-glow {
     position: absolute; top: 50%; left: 50%; width: 100vw; height: 100vh;
-    transform: translate(-50%, -50%); z-index: 0; opacity: 0.25;
+    transform: translate(-50%, -50%); z-index: 0; opacity: 0.2;
     background: radial-gradient(circle at center, var(--accent) 0%, transparent 60%);
-    transition: background 0.5s var(--ease-out);
+    transition: background 0.3s ease;
   }
 
-  /* ЗАГРУЗКА */
-  #splash {
-    position: fixed; inset: 0; z-index: 1000;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
-    background: #0a0a0f; transition: opacity 0.5s var(--ease-out);
-  }
+  #splash { position: fixed; inset: 0; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0a0a0f; transition: opacity 0.5s; }
   #splash.hide { opacity: 0; pointer-events: none; }
   .splash-logo { font-size: 3vw; font-weight: 300; letter-spacing: 0.8vw; }
-  .splash-loader { width: 200px; height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 20px; overflow: hidden; }
-  .splash-loader-bar { height: 100%; width: 0%; background: var(--accent); animation: loadBar 1.5s var(--ease-out) forwards; }
-  @keyframes loadBar { 0% { width: 0%; } 100% { width: 100%; } }
 
-  /* ГЛАВНЫЙ ЭКРАН */
-  #main { position: relative; z-index: 1; width: 100%; height: 100%; opacity: 0; transition: opacity 0.5s var(--ease-out); display: flex; flex-direction: column; }
+  #main { position: relative; z-index: 1; width: 100%; height: 100%; opacity: 0; transition: opacity 0.5s; display: flex; flex-direction: column; }
   #main.show { opacity: 1; }
 
-  /* ВЕРХНЯЯ ПАНЕЛЬ */
-  .topbar {
-    position: relative; width: 100%; height: 10vh; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 4vw; z-index: 20;
-    background: linear-gradient(180deg, #0a0a0f 0%, transparent 100%);
-  }
-  .brand { display: flex; align-items: center; gap: 1vw; font-size: 1.8vh; font-weight: 600; letter-spacing: 0.1vw; }
+  .topbar { position: relative; width: 100%; height: 10vh; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 4vw; z-index: 20; background: linear-gradient(180deg, #0a0a0f 0%, transparent 100%); }
+  .brand { display: flex; align-items: center; gap: 1vw; font-size: 1.8vh; font-weight: 600; }
   .brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
   .top-right { display: flex; align-items: center; gap: 1.5vw; }
   .clock-box { text-align: right; line-height: 1.2; }
   .clock { font-size: 2.5vh; font-weight: 300; }
   .date { font-size: 1.5vh; color: var(--dim); }
-  
-  .avatar {
-    width: 4.5vh; height: 4.5vh; border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent), #333);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 2vh; font-weight: bold; color: #fff;
-  }
+  .avatar { width: 4.5vh; height: 4.5vh; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #333); display: flex; align-items: center; justify-content: center; font-size: 2vh; font-weight: bold; }
 
-  /* КОНТЕНТ (Карусель или Сетка) */
   .content-area { flex: 1; position: relative; display: flex; flex-direction: column; justify-content: center; }
+
+  .carousel-wrap { position: absolute; bottom: 8vh; left: 0; width: 100%; height: 18vh; display: flex; align-items: center; z-index: 15; overflow: hidden; }
+  .carousel { display: flex; align-items: center; gap: 2vh; padding: 0 50vw; /* УБРАЛИ TRANSITION ДЛЯ УСТРАНЕНИЯ ЛАГОВ */ }
   
-  /* КАРУСЕЛЬ */
-  .carousel-wrap {
-    position: absolute; bottom: 8vh; left: 0; width: 100%; height: 18vh;
-    display: flex; align-items: center; justify-content: flex-start;
-    z-index: 15; overflow: hidden;
-  }
-  .carousel {
-    display: flex; align-items: center; gap: 2vh; 
-    padding: 0 50vw; /* Отступы для центрирования */
-    transition: transform 0.3s var(--ease-out);
-  }
-  .tile {
-    width: 12vh; height: 12vh; border-radius: 2.5vh;
-    display: flex; align-items: center; justify-content: center;
-    background: #1a1a24; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-    flex-shrink: 0; cursor: pointer; overflow: hidden; opacity: 0.6;
-    transition: all 0.3s var(--ease-out); border: 2px solid transparent;
-  }
+  .tile { width: 12vh; height: 12vh; border-radius: 2.5vh; display: flex; align-items: center; justify-content: center; background: #1a1a24; box-shadow: 0 5px 15px rgba(0,0,0,0.5); flex-shrink: 0; overflow: hidden; opacity: 0.6; border: 2px solid transparent; }
   .tile img { width: 100%; height: 100%; object-fit: cover; border-radius: 2.5vh; }
-  .tile.active {
-    width: 16vh; height: 16vh; border-radius: 3vh;
-    box-shadow: 0 0 0 3px #fff, 0 10px 30px var(--accent-glow);
-    transform: translateY(-10px); opacity: 1;
-  }
-  .tile.favorite::after {
-    content: '★'; position: absolute; top: 5px; right: 5px;
-    color: gold; font-size: 3vh; text-shadow: 0 0 10px #000;
-  }
+  .tile.active { width: 16vh; height: 16vh; border-radius: 3vh; box-shadow: 0 0 0 3px #fff, 0 10px 30px var(--accent-glow); transform: translateY(-10px); opacity: 1; transition: width 0.1s, height 0.1s; /* Легкая анимация только для размера */ }
+  .tile.dim { opacity: 0.3; transform: scale(0.85); }
 
-  /* СЕТКА (Grid View) */
-  .grid-view {
-    display: none; grid-template-columns: repeat(auto-fill, minmax(14vh, 1fr));
-    gap: 3vh; padding: 4vh; overflow-y: auto; height: 100%;
-  }
-  .grid-view.show { display: grid; }
-  .grid-item {
-    display: flex; flex-direction: column; align-items: center; gap: 1vh;
-    padding: 1vh; border-radius: 2vh; cursor: pointer; border: 2px solid transparent;
-  }
-  .grid-item img { width: 10vh; height: 10vh; border-radius: 2vh; }
-  .grid-item span { font-size: 1.5vh; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
-  .grid-item.active { background: rgba(255,255,255,0.1); border-color: #fff; }
-
-  /* ЦЕНТРАЛЬНЫЙ ГЕРОЙ */
-  .hero {
-    display: flex; flex-direction: column; align-items: center; gap: 2vh;
-    transform: translateY(-10%); z-index: 10;
-  }
-  .hero-icon {
-    width: 18vh; height: 18vh; border-radius: 3.5vh;
-    display: flex; align-items: center; justify-content: center;
-    background: #1a1a24; box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 40px var(--accent-glow);
-    overflow: hidden; border: 2px solid rgba(255,255,255,0.1);
-  }
+  .hero { display: flex; flex-direction: column; align-items: center; gap: 2vh; transform: translateY(-10%); z-index: 10; }
+  .hero-icon { width: 18vh; height: 18vh; border-radius: 3.5vh; display: flex; align-items: center; justify-content: center; background: #1a1a24; box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 40px var(--accent-glow); overflow: hidden; border: 2px solid rgba(255,255,255,0.1); }
   .hero-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 3.5vh; }
   .hero-name { font-size: 3.5vh; font-weight: 300; text-shadow: 0 4px 10px rgba(0,0,0,1); }
 
-  /* НИЖНЯЯ ПАНЕЛЬ */
-  .bottombar {
-    position: relative; width: 100%; height: 8vh; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 4vw; z-index: 20;
-    background: linear-gradient(0deg, #0a0a0f 0%, transparent 100%);
-  }
+  .bottombar { position: relative; width: 100%; height: 8vh; flex-shrink: 0; display: flex; align-items: center; padding: 0 4vw; background: linear-gradient(0deg, #0a0a0f 0%, transparent 100%); }
   .hints { display: flex; gap: 2vw; font-size: 1.8vh; color: var(--dim); white-space: nowrap; }
-  .hint { display: flex; align-items: center; gap: 0.5vw; }
-  .key { 
-    display: inline-flex; align-items: center; justify-content: center; 
-    min-width: 2.5vh; height: 2.5vh; padding: 0 1vh; 
-    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); 
-    border-radius: 6px; font-size: 1.2vh; color: #fff; font-weight: 600; 
-  }
+  .key { display: inline-flex; align-items: center; justify-content: center; min-width: 2.5vh; height: 2.5vh; padding: 0 1vh; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; font-size: 1.2vh; color: #fff; font-weight: 600; margin-right: 0.5vw;}
 
-  /* МОДАЛЬНЫЕ ОКНА (Меню, Настройки) */
-  .modal-overlay {
-    position: fixed; inset: 0; z-index: 900;
-    background: rgba(0,0,0,0.8);
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0; pointer-events: none; transition: opacity 0.3s;
-  }
+  /* МОДАЛКИ */
+  .modal-overlay { position: fixed; inset: 0; z-index: 900; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
   .modal-overlay.show { opacity: 1; pointer-events: auto; }
-  .modal-box {
-    background: #121218; border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 2vh; padding: 4vh; width: 60vw; max-width: 800px;
-    display: flex; flex-direction: column; gap: 2vh;
-    transform: scale(0.95); transition: transform 0.3s;
-  }
+  .modal-box { background: #121218; border: 1px solid rgba(255,255,255,0.15); border-radius: 2vh; padding: 4vh; width: 60vw; max-width: 800px; display: flex; flex-direction: column; gap: 2vh; transform: scale(0.95); transition: transform 0.2s; }
   .modal-overlay.show .modal-box { transform: scale(1); }
   .modal-box h2 { font-size: 3vh; font-weight: 300; margin-bottom: 1vh; text-align: center; }
   
-  .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2vw; }
-  .menu-btn {
-    background: #1a1a24; border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 1.5vh; padding: 2vh; color: #fff; font-size: 1.8vh;
-    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 1vh;
-    transition: all 0.2s;
-  }
-  .menu-btn:hover, .menu-btn.focused { background: var(--accent); transform: scale(1.05); outline: none; }
-  
-  /* ПОИСК */
-  .search-input {
-    width: 100%; padding: 2vh; font-size: 2.5vh; background: #1a1a24;
-    border: 1px solid var(--accent); border-radius: 1vh; color: #fff; outline: none;
-  }
-  .keyboard { display: grid; grid-template-columns: repeat(10, 1fr); gap: 1vh; margin-top: 2vh; }
-  .kb-key {
-    padding: 1.5vh; background: #1a1a24; border-radius: 0.5vh; text-align: center;
-    cursor: pointer; font-size: 2vh;
-  }
-  .kb-key:hover { background: var(--accent); }
+  .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2vw; }
+  .menu-btn { background: #1a1a24; border: 1px solid rgba(255,255,255,0.1); border-radius: 1.5vh; padding: 2vh; color: #fff; font-size: 1.8vh; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 1vh; transition: background 0.2s; }
+  .menu-btn:hover, .menu-btn.focused { background: var(--accent); outline: none; }
 
-  /* ТОСТ */
-  .toast {
-    position: fixed; bottom: 12vh; left: 50%; transform: translateX(-50%) translateY(20px);
-    background: #1a1a24; border: 1px solid rgba(255,255,255,0.15);
-    padding: 1.5vh 3vw; border-radius: 40px; font-size: 2vh;
-    opacity: 0; pointer-events: none; transition: all 0.3s; z-index: 1000;
-  }
+  .toast { position: fixed; bottom: 12vh; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a1a24; border: 1px solid rgba(255,255,255,0.15); padding: 1.5vh 3vw; border-radius: 40px; font-size: 2vh; opacity: 0; pointer-events: none; transition: all 0.3s; z-index: 1000; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
 </head>
@@ -207,13 +90,9 @@
 <div class="bg-ambient"></div>
 <div class="bg-glow" id="bgGlow"></div>
 
-<div id="splash">
-  <div class="splash-logo">MorozLauncherTV</div>
-  <div class="splash-loader"><div class="splash-loader-bar"></div></div>
-</div>
+<div id="splash"><div class="splash-logo">MorozLauncherTV</div></div>
 
 <div id="main">
-  <!-- Верхняя панель -->
   <div class="topbar">
     <div class="brand"><span class="dot"></span>MOROZ LAUNCHER</div>
     <div class="top-right">
@@ -225,24 +104,16 @@
     </div>
   </div>
 
-  <!-- Основная зона -->
-  <div class="content-area" id="contentArea">
-    <!-- Режим Карусели -->
-    <div id="carouselMode" style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center;">
-      <div class="hero" id="hero">
-        <div class="hero-icon" id="heroIcon">📱</div>
-        <div class="hero-name" id="heroName">Загрузка...</div>
-      </div>
-      <div class="carousel-wrap">
-        <div class="carousel" id="carousel"></div>
-      </div>
+  <div class="content-area">
+    <div class="hero" id="hero">
+      <div class="hero-icon" id="heroIcon">📱</div>
+      <div class="hero-name" id="heroName">Загрузка...</div>
     </div>
-
-    <!-- Режим Сетки -->
-    <div class="grid-view" id="gridView"></div>
+    <div class="carousel-wrap">
+      <div class="carousel" id="carousel"></div>
+    </div>
   </div>
 
-  <!-- Нижняя панель -->
   <div class="bottombar">
     <div class="hints">
       <div class="hint"><span class="key">◀ ▶</span> выбор</div>
@@ -252,28 +123,16 @@
   </div>
 </div>
 
-<!-- Меню быстрых действий -->
+<!-- Быстрое меню -->
 <div class="modal-overlay" id="quickMenu">
   <div class="modal-box">
-    <h2>Быстрое меню</h2>
+    <h2>Меню</h2>
     <div class="menu-grid">
-      <div class="menu-btn" onclick="action('grid')">🗂 Сетка</div>
-      <div class="menu-btn" onclick="action('search')">🔍 Поиск</div>
-      <div class="menu-btn" onclick="action('sort')">🔤 Сортировка</div>
-      <div class="menu-btn" onclick="action('theme')">🎨 Тема</div>
       <div class="menu-btn" onclick="action('settings')">⚙️ Настройки</div>
+      <div class="menu-btn" onclick="action('theme')">🎨 Сменить тему</div>
+      <div class="menu-btn" onclick="action('random')">🎲 Рандом</div>
       <div class="menu-btn" onclick="action('close')">❌ Закрыть</div>
     </div>
-  </div>
-</div>
-
-<!-- Поиск -->
-<div class="modal-overlay" id="searchMenu">
-  <div class="modal-box">
-    <h2>Поиск приложений</h2>
-    <input type="text" id="searchInput" class="search-input" placeholder="Введите название..." readonly>
-    <div class="keyboard" id="keyboard"></div>
-    <div class="menu-btn" style="margin-top:2vh;" onclick="closeModals()">Закрыть</div>
   </div>
 </div>
 
@@ -282,33 +141,27 @@
   <div class="modal-box">
     <h2>Настройки</h2>
     <div class="menu-grid">
-      <div class="menu-btn" onclick="action('toggleClock')">🕒 Скрыть часы</div>
-      <div class="menu-btn" onclick="action('clearFav')">⭐ Сброс избранного</div>
-      <div class="menu-btn" onclick="action('android')">🤖 Android</div>
+      <div class="menu-btn" onclick="action('toggleClock')" id="btnClock">🕒 Скрыть часы</div>
+      <div class="menu-btn" onclick="action('android')">🤖 Настройки Android</div>
+      <div class="menu-btn" onclick="action('reload')">🔄 Перезагрузить лаунчер</div>
+      <div class="menu-btn" onclick="closeModals()">🔙 Назад</div>
     </div>
-    <div class="menu-btn" style="margin-top:2vh;" onclick="closeModals()">Назад</div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-  /* === СОСТОЯНИЕ === */
-  const THEMES = ['blue', 'red', 'green', 'purple', 'dark'];
-  let themeIdx = localStorage.getItem('themeIdx') ? parseInt(localStorage.getItem('themeIdx')) : 0;
+  const THEMES = ['blue', 'red', 'green', 'purple'];
+  let themeIdx = parseInt(localStorage.getItem('themeIdx') || '0');
   let showClock = localStorage.getItem('showClock') !== 'false';
-  let viewMode = 'carousel'; // 'carousel' или 'grid'
-  let apps = [];
-  let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-  let hiddenApps = JSON.parse(localStorage.getItem('hiddenApps') || '[]');
   
+  let apps = [];
   let currentIndex = 0;
-  let focusedMenuIndex = 0;
   let holdTimer = null;
 
-  /* === ИНИЦИАЛИЗАЦИЯ === */
   document.body.dataset.theme = THEMES[themeIdx];
-  if(!showClock) document.getElementById('clockBox').style.display = 'none';
+  if (!showClock) document.getElementById('clockBox').style.display = 'none';
 
   setTimeout(() => {
     document.getElementById('splash').classList.add('hide');
@@ -316,60 +169,35 @@
     initLauncher();
   }, 1500);
 
-  /* === ЛОГИКА === */
   const carousel = document.getElementById('carousel');
   const heroIcon = document.getElementById('heroIcon');
   const heroName = document.getElementById('heroName');
-  const gridView = document.getElementById('gridView');
-  const bgGlow = document.getElementById('bgGlow');
 
   function renderIcon(icon) {
-    if (icon && icon.startsWith('data:image')) return `<img src="${icon}" alt="">`;
-    return '<span style="font-size: 4vh;">📱</span>';
+    return (icon && icon.startsWith('data:image')) ? `<img src="${icon}">` : '<span style="font-size: 4vh;">📱</span>';
   }
 
   function initLauncher() {
-    if (!window.AndroidBridge) { heroName.textContent = 'Bridge Error'; return; }
-    try { apps = JSON.parse(AndroidBridge.getApps()); } 
-    catch { heroName.textContent = 'Error'; return; }
-    
-    // Фильтруем скрытые
-    apps = apps.filter(a => !hiddenApps.includes(a.package));
-    // Сортируем: избранные сверху, потом по алфавиту
-    apps.sort((a, b) => {
-      const aFav = favorites.includes(a.package) ? 1 : 0;
-      const bFav = favorites.includes(b.package) ? 1 : 0;
-      if (aFav !== bFav) return bFav - aFav;
-      return a.name.localeCompare(b.name);
+    if (!window.AndroidBridge) return;
+    try { apps = JSON.parse(AndroidBridge.getApps()); } catch { return; }
+    if (!apps.length) return;
+
+    apps.sort((a, b) => a.name.localeCompare(b.name));
+
+    carousel.innerHTML = '';
+    apps.forEach((app, i) => {
+      const tile = document.createElement('div');
+      tile.className = 'tile';
+      tile.innerHTML = renderIcon(app.icon);
+      // Обработка клика (для мыши или сенсора)
+      tile.onclick = () => { setCurrent(i); openApp(app); };
+      carousel.appendChild(tile);
     });
 
-    renderViews();
     setCurrent(0);
-    
     setInterval(tickClock, 1000);
     tickClock();
     setupControls();
-  }
-
-  function renderViews() {
-    carousel.innerHTML = '';
-    gridView.innerHTML = '';
-    
-    apps.forEach((app, i) => {
-      // Для карусели
-      const tile = document.createElement('div');
-      tile.className = 'tile' + (favorites.includes(app.package) ? ' favorite' : '');
-      tile.innerHTML = renderIcon(app.icon);
-      tile.addEventListener('click', () => { setCurrent(i); openApp(app); });
-      carousel.appendChild(tile);
-
-      // Для сетки
-      const gItem = document.createElement('div');
-      gItem.className = 'grid-item';
-      gItem.innerHTML = `${renderIcon(app.icon)}<span>${app.name}</span>`;
-      gItem.addEventListener('click', () => { setCurrent(i); openApp(app); });
-      gridView.appendChild(gItem);
-    });
   }
 
   function setCurrent(i) {
@@ -380,27 +208,17 @@
     heroIcon.innerHTML = renderIcon(app.icon);
     heroName.textContent = app.name;
 
-    if (viewMode === 'carousel') {
-      const tiles = carousel.querySelectorAll('.tile');
-      tiles.forEach((tile, idx) => {
-        tile.classList.toggle('active', idx === currentIndex);
-        tile.classList.toggle('dim', Math.abs(idx - currentIndex) > 2);
-      });
-      
-      // Центрирование
-      setTimeout(() => {
-        const activeTile = tiles[currentIndex];
-        if (activeTile) {
-          const offset = activeTile.offsetLeft - (window.innerWidth / 2) + (activeTile.offsetWidth / 2);
-          carousel.style.transform = `translateX(${-offset}px)`;
-        }
-      }, 10);
-    } else {
-      const items = gridView.querySelectorAll('.grid-item');
-      items.forEach((item, idx) => {
-        item.classList.toggle('active', idx === currentIndex);
-      });
-      if(items[currentIndex]) items[currentIndex].scrollIntoView({ block: 'nearest' });
+    const tiles = carousel.querySelectorAll('.tile');
+    tiles.forEach((tile, idx) => {
+      tile.classList.toggle('active', idx === currentIndex);
+      tile.classList.toggle('dim', Math.abs(idx - currentIndex) > 2);
+    });
+
+    // Жесткое центрирование без анимации (мгновенно, чтобы не лагало)
+    const activeTile = tiles[currentIndex];
+    if (activeTile) {
+      const offset = activeTile.offsetLeft - (window.innerWidth / 2) + (activeTile.offsetWidth / 2);
+      carousel.style.transform = `translateX(${-offset}px)`;
     }
   }
 
@@ -411,174 +229,67 @@
   function tickClock() {
     const now = new Date();
     document.getElementById('clock').textContent = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-    const days = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
-    document.getElementById('date').textContent = days[now.getDay()] + ', ' + now.getDate() + '.' + String(now.getMonth()+1).padStart(2, '0');
+    document.getElementById('date').textContent = now.toLocaleDateString('ru-RU', { weekday: 'short', day: 'numeric', month: 'short' });
   }
 
-  /* === УПРАВЛЕНИЕ ПУЛЬТОМ === */
   function setupControls() {
     document.addEventListener('keydown', (e) => {
-      // Если открыты модалки
       const activeModal = document.querySelector('.modal-overlay.show');
       if (activeModal) {
-        if (e.key === 'Escape' || e.key === 'Backspace') { closeModals(); return; }
-        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); moveMenuFocus(1); }
-        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); moveMenuFocus(-1); }
-        if (e.key === 'Enter') { e.preventDefault(); document.activeElement.click(); }
+        if (e.key === 'Escape' || e.key === 'Backspace') closeModals();
+        if (e.key === 'Enter') document.activeElement.click();
         return;
       }
 
-      // Основное управление
       switch (e.key) {
         case 'ArrowLeft': e.preventDefault(); setCurrent(currentIndex - 1); break;
         case 'ArrowRight': e.preventDefault(); setCurrent(currentIndex + 1); break;
-        case 'ArrowUp': if(viewMode === 'grid') { e.preventDefault(); setCurrent(currentIndex - 5); } break;
-        case 'ArrowDown': if(viewMode === 'grid') { e.preventDefault(); setCurrent(currentIndex + 5); } break;
         case 'Enter': 
-          e.preventDefault();
-          if (apps[currentIndex]) openApp(apps[currentIndex]);
+          e.preventDefault(); 
+          if (apps[currentIndex]) openApp(apps[currentIndex]); 
           break;
         case 'ContextMenu': openModal('quickMenu'); break;
-        case 'F1': toggleFavorite(); break; // F1 = добавить в избранное
-        case 'F2': viewMode = viewMode === 'carousel' ? 'grid' : 'carousel'; toggleView(); break;
       }
     });
 
-    // Долгое нажатие ОК
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') holdTimer = setTimeout(() => openModal('quickMenu'), 600);
-    });
-    document.addEventListener('keyup', (e) => {
-      if (e.key === 'Enter') clearTimeout(holdTimer);
-    });
+    // Долгое нажатие OK
+    document.addEventListener('keydown', (e) => { if (e.key === 'Enter') holdTimer = setTimeout(() => openModal('quickMenu'), 600); });
+    document.addEventListener('keyup', (e) => { if (e.key === 'Enter') clearTimeout(holdTimer); });
   }
 
-  function moveMenuFocus(dir) {
-    const btns = document.querySelectorAll('.modal-overlay.show .menu-btn');
-    if (!btns.length) return;
-    focusedMenuIndex = (focusedMenuIndex + dir + btns.length) % btns.length;
-    btns[focusedMenuIndex].focus();
-  }
-
-  /* === МОДАЛКИ И ДЕЙСТВИЯ === */
+  /* === МЕНЮ И НАСТРОЙКИ === */
   function openModal(id) {
     document.getElementById(id).classList.add('show');
-    focusedMenuIndex = 0;
-    setTimeout(() => {
-      const first = document.querySelector(`#${id} .menu-btn`);
-      if (first) first.focus();
-    }, 50);
+    setTimeout(() => { const btn = document.querySelector(`#${id} .menu-btn`); if (btn) btn.focus(); }, 50);
   }
-
-  function closeModals() {
-    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('show'));
-  }
+  function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('show')); }
 
   function action(type) {
     switch(type) {
-      case 'grid':
-        viewMode = viewMode === 'carousel' ? 'grid' : 'carousel';
-        toggleView();
-        closeModals();
-        break;
-      case 'search':
-        closeModals();
-        openModal('searchMenu');
-        initKeyboard();
-        break;
-      case 'sort':
-        apps.sort((a, b) => a.name.localeCompare(b.name));
-        renderViews(); setCurrent(0);
-        toast('Отсортировано по алфавиту');
-        closeModals();
-        break;
-      case 'theme':
+      case 'settings': closeModals(); openModal('settingsMenu'); break;
+      case 'theme': 
         themeIdx = (themeIdx + 1) % THEMES.length;
         document.body.dataset.theme = THEMES[themeIdx];
         localStorage.setItem('themeIdx', themeIdx);
-        toast('Тема: ' + THEMES[themeIdx]);
-        break;
-      case 'settings':
-        closeModals();
-        openModal('settingsMenu');
-        break;
-      case 'close':
-        closeModals();
-        break;
+        toast('Тема: ' + THEMES[themeIdx]); break;
+      case 'random': 
+        setCurrent(Math.floor(Math.random() * apps.length)); closeModals(); break;
+      case 'close': closeModals(); break;
       case 'toggleClock':
         showClock = !showClock;
         document.getElementById('clockBox').style.display = showClock ? 'block' : 'none';
         localStorage.setItem('showClock', showClock);
-        closeModals();
+        document.getElementById('btnClock').innerText = showClock ? '🕒 Скрыть часы' : '🕒 Показать часы';
         break;
-      case 'clearFav':
-        favorites = [];
-        localStorage.setItem('favorites', JSON.stringify(favorites));
-        toast('Избранное очищено');
-        closeModals();
-        break;
-      case 'android':
-        if(window.AndroidBridge) AndroidBridge.openSettings();
-        break;
+      case 'android': if (window.AndroidBridge) AndroidBridge.openSettings(); break;
+      case 'reload': location.reload(); break;
     }
   }
 
-  function toggleView() {
-    if (viewMode === 'grid') {
-      document.getElementById('carouselMode').style.display = 'none';
-      gridView.classList.add('show');
-    } else {
-      document.getElementById('carouselMode').style.display = 'flex';
-      gridView.classList.remove('show');
-      setCurrent(currentIndex);
-    }
-  }
-
-  function toggleFavorite() {
-    const pkg = apps[currentIndex].package;
-    if (favorites.includes(pkg)) {
-      favorites = favorites.filter(f => f !== pkg);
-      toast('Удалено из избранного');
-    } else {
-      favorites.push(pkg);
-      toast('Добавлено в избранное');
-    }
-    localStorage.setItem('favorites', JSON.stringify(favorites));
-    initLauncher(); // Пересортировать
-  }
-
-  /* === ПОИСК (Клавиатура) === */
-  function initKeyboard() {
-    const kb = document.getElementById('keyboard');
-    kb.innerHTML = '';
-    const keys = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ_ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('');
-    keys.forEach(k => {
-      const el = document.createElement('div');
-      el.className = 'kb-key';
-      el.textContent = k;
-      el.onclick = () => {
-        const inp = document.getElementById('searchInput');
-        inp.value += (k === '_' ? ' ' : k);
-        filterSearch(inp.value);
-      };
-      kb.appendChild(el);
-    });
-  }
-
-  function filterSearch(query) {
-    const items = carousel.querySelectorAll('.tile');
-    apps.forEach((app, i) => {
-      const match = app.name.toLowerCase().includes(query.toLowerCase());
-      items[i].style.display = match ? 'flex' : 'none';
-    });
-  }
-
-  /* === ТОСТ === */
   let toastTimer;
   function toast(msg) {
     const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
+    t.textContent = msg; t.classList.add('show');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
   }
