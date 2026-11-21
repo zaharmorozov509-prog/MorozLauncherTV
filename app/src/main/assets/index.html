@@ -2,7 +2,9 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<!-- Жесткая фиксация масштаба для Android TV -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
 <title>MorozLauncherTV</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -11,11 +13,11 @@
     --accent: #0070d1;
     --accent-glow: rgba(0,112,209,0.5);
     --text: #ffffff;
-    --dim: rgba(255,255,255,0.5);
+    --dim: rgba(255,255,255,0.6);
     --ease-ps5: cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  /* ================= ТЕМЫ ================= */
+  /* ТЕМЫ */
   body[data-theme="blue"]   { --accent: #0070d1; --accent-glow: rgba(0,112,209,0.5); }
   body[data-theme="red"]    { --accent: #e50914; --accent-glow: rgba(229,9,20,0.5); }
   body[data-theme="green"]  { --accent: #1db954; --accent-glow: rgba(29,185,84,0.5); }
@@ -25,12 +27,17 @@
   body[data-theme="pink"]   { --accent: #ff2d92; --accent-glow: rgba(255,45,146,0.5); }
   body[data-theme="gray"]   { --accent: #8b949e; --accent-glow: rgba(139,148,158,0.5); }
 
+  /* ГЛАВНЫЙ ФИКС ВЕРСТКИ */
   html, body {
-    width: 100%; height: 100%; overflow: hidden;
-    background: #000; color: var(--text);
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden; /* Убирает любые вылезания за экран */
+    background: #000;
+    color: var(--text);
     font-family: 'Segoe UI', -apple-system, Roboto, sans-serif;
     user-select: none;
-    transition: background 0.4s var(--ease-ps5);
+    position: fixed; 
+    top: 0; left: 0;
   }
 
   /* ================= ЗАГРУЗКА 1 ================= */
@@ -42,7 +49,7 @@
   }
   #splash1.hide { opacity: 0; pointer-events: none; }
   #splash1 .text {
-    font-size: 32px; font-weight: 300; letter-spacing: 4px;
+    font-size: 3vw; font-weight: 300; letter-spacing: 0.4vw;
     animation: splashFadeIn 1s var(--ease-ps5) forwards;
   }
   @keyframes splashFadeIn {
@@ -61,7 +68,7 @@
   #splash2.show { opacity: 1; pointer-events: auto; }
   #splash2.hide { opacity: 0; pointer-events: none; }
   #splash2 .text {
-    font-size: 28px; font-weight: 600; letter-spacing: 6px;
+    font-size: 2.5vw; font-weight: 600; letter-spacing: 0.6vw;
     text-shadow: 0 0 40px var(--accent-glow);
     animation: logoReveal 0.9s var(--ease-ps5) forwards;
   }
@@ -77,120 +84,128 @@
   .bg { position: absolute; inset: 0; transition: background 0.6s var(--ease-ps5); z-index: 0; }
   .bg::after {
     content: ''; position: absolute; inset: 0;
-    background: radial-gradient(circle at 50% 40%, transparent 0%, rgba(0,0,0,0.8) 75%);
+    background: radial-gradient(circle at 50% 40%, transparent 0%, rgba(0,0,0,0.85) 75%);
   }
 
   /* ================= ВЕРХНЯЯ ПАНЕЛЬ ================= */
   .topbar {
-    position: absolute; top: 0; left: 0; right: 0; height: 80px;
+    position: absolute; top: 0; left: 0; right: 0; 
+    height: 10vh;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0 56px; z-index: 20;
-    background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 100%);
+    padding: 0 3vw; z-index: 20;
+    background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
   }
-  .brand { display: flex; align-items: center; gap: 12px; font-size: 16px; font-weight: 600; letter-spacing: 2px; }
-  .brand .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); }
-  .top-right { display: flex; align-items: center; gap: 20px; }
-  .clock { font-size: 18px; font-weight: 300; letter-spacing: 1px; }
+  .brand { display: flex; align-items: center; gap: 1vw; font-size: 1.8vh; font-weight: 600; letter-spacing: 0.2vw; }
+  .brand .dot { width: 0.8vw; height: 0.8vw; border-radius: 50%; background: var(--accent); box-shadow: 0 0 15px var(--accent); }
+  .top-right { display: flex; align-items: center; gap: 1.5vw; }
+  
+  .clock { font-size: 2.2vh; font-weight: 400; letter-spacing: 1px; }
 
   .top-btn {
-    width: 40px; height: 40px; border-radius: 50%;
+    width: 4.5vh; height: 4.5vh; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 18px; cursor: pointer;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.08);
+    font-size: 2vh; cursor: pointer;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
     transition: all 0.2s var(--ease-ps5);
   }
   .top-btn:hover, .top-btn.focused {
     background: var(--accent);
     box-shadow: 0 0 20px var(--accent-glow);
-    transform: scale(1.08);
+    transform: scale(1.1);
   }
 
   .avatar {
-    width: 40px; height: 40px; border-radius: 50%;
+    width: 4.5vh; height: 4.5vh; border-radius: 50%;
     background: linear-gradient(135deg, var(--accent), #00b3ff);
     display: flex; align-items: center; justify-content: center;
-    font-size: 16px; font-weight: 600;
-    border: 2px solid rgba(255,255,255,0.25);
+    font-size: 2.2vh; font-weight: bold; color: #fff;
+    border: 2px solid rgba(255,255,255,0.3);
     transition: all 0.3s var(--ease-ps5);
   }
 
-  /* ================= ГЕРОЙ ================= */
+  /* ================= ГЕРОЙ (ЦЕНТР) ================= */
   .hero {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -55%);
-    display: flex; flex-direction: column; align-items: center; gap: 20px;
+    position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%);
+    display: flex; flex-direction: column; align-items: center; gap: 2vh;
     z-index: 10; pointer-events: none;
-    transition: all 0.4s var(--ease-ps5);
+    transition: all 0.5s var(--ease-ps5);
   }
   .hero-icon {
-    width: 200px; height: 200px; border-radius: 36px;
+    width: 22vh; height: 22vh; border-radius: 4vh;
     display: flex; align-items: center; justify-content: center;
     background: rgba(255,255,255,0.05);
     backdrop-filter: blur(20px);
-    box-shadow: 0 20px 80px rgba(0,0,0,0.7), inset 0 0 0 1px rgba(255,255,255,0.08);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.1);
     overflow: hidden;
     transition: all 0.4s var(--ease-ps5);
   }
   .hero-icon img { width: 100%; height: 100%; object-fit: cover; }
-  .hero-name { font-size: 28px; font-weight: 300; letter-spacing: 1px; text-shadow: 0 2px 30px rgba(0,0,0,0.9); }
+  .hero-name { font-size: 3.5vh; font-weight: 300; letter-spacing: 1px; text-shadow: 0 4px 20px rgba(0,0,0,0.9); }
 
   /* ================= КАРУСЕЛЬ ================= */
   .carousel-wrap {
-    position: absolute; bottom: 120px; left: 0; right: 0; height: 160px;
+    position: absolute; bottom: 10vh; left: 0; right: 0; height: 18vh;
     display: flex; align-items: center; justify-content: center;
     z-index: 15; pointer-events: none;
   }
   .carousel {
-    display: flex; align-items: center; gap: 24px;
+    display: flex; align-items: center; gap: 2vw;
     padding: 0 50vw;
     transition: transform 0.45s var(--ease-ps5);
   }
   .tile {
-    width: 100px; height: 100px; border-radius: 24px;
+    width: 12vh; height: 12vh; border-radius: 2.5vh;
     display: flex; align-items: center; justify-content: center;
     background: rgba(255,255,255,0.08);
     backdrop-filter: blur(16px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
     flex-shrink: 0; cursor: pointer;
     transition: all 0.4s var(--ease-ps5);
     overflow: hidden;
   }
   .tile img { width: 100%; height: 100%; object-fit: cover; }
+  
+  /* Активная плитка */
   .tile.active {
-    width: 150px; height: 150px; border-radius: 30px;
-    box-shadow: 0 0 0 3px #fff, 0 20px 70px var(--accent-glow);
+    width: 18vh; height: 18vh; border-radius: 3.5vh;
+    box-shadow: 0 0 0 3px #fff, 0 20px 50px var(--accent-glow);
     transform: translateY(-10px);
   }
-  .tile.dim { opacity: 0.4; transform: scale(0.85); }
+  .tile.dim { opacity: 0.3; transform: scale(0.85); }
 
   /* ================= НИЖНЯЯ ПАНЕЛЬ ================= */
   .bottombar {
-    position: absolute; bottom: 0; left: 0; right: 0; height: 66px;
+    position: absolute; bottom: 0; left: 0; right: 0; height: 8vh;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0 56px; z-index: 20;
-    background: linear-gradient(0deg, rgba(0,0,0,0.75) 0%, transparent 100%);
+    padding: 0 3vw; z-index: 20;
+    background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 100%);
   }
-  .hints { display: flex; gap: 32px; font-size: 12px; color: var(--dim); }
-  .hint { display: flex; align-items: center; gap: 8px; }
-  .key { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; padding: 0 6px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); border-radius: 5px; font-size: 10px; color: #fff; font-weight: 600; }
-  .app-count { font-size: 12px; color: var(--dim); }
+  .hints { display: flex; gap: 2vw; font-size: 1.5vh; color: var(--dim); }
+  .hint { display: flex; align-items: center; gap: 0.5vw; }
+  .key { 
+    display: inline-flex; align-items: center; justify-content: center; 
+    min-width: 2.5vh; height: 2.5vh; padding: 0 0.5vw; 
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); 
+    border-radius: 6px; font-size: 1.2vh; color: #fff; font-weight: 600; 
+  }
+  .app-count { font-size: 1.5vh; color: var(--dim); }
 
   /* ================= МОДАЛКА НАСТРОЕК ================= */
   .modal {
     position: fixed; inset: 0; z-index: 500;
     background: rgba(0,0,0,0.85);
-    backdrop-filter: blur(18px);
+    backdrop-filter: blur(20px);
     display: none; align-items: center; justify-content: center;
-    padding: 40px;
   }
   .modal.show { display: flex; }
 
   .settings-card {
-    background: rgba(16,16,20,0.98);
+    background: rgba(18,18,22,0.98);
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 24px;
-    padding: 40px;
-    width: 100%; max-width: 720px;
+    padding: 4vh 4vw;
+    width: 100%; max-width: 60vw;
     box-shadow: 0 40px 100px rgba(0,0,0,0.8);
     animation: cardIn 0.4s var(--ease-ps5);
   }
@@ -199,105 +214,56 @@
     to { opacity: 1; transform: scale(1) translateY(0); }
   }
 
-  .settings-card h2 {
-    font-size: 26px; font-weight: 300; letter-spacing: 1px;
-    margin-bottom: 8px;
-  }
-  .settings-card .sub {
-    font-size: 14px; color: var(--dim); margin-bottom: 32px;
-  }
+  .settings-card h2 { font-size: 3.5vh; font-weight: 300; letter-spacing: 1px; margin-bottom: 1vh; }
+  .settings-card .sub { font-size: 1.8vh; color: var(--dim); margin-bottom: 4vh; }
 
   .section-title {
-    font-size: 13px; text-transform: uppercase; letter-spacing: 2px;
-    color: var(--dim); margin-bottom: 16px; margin-top: 28px;
+    font-size: 1.5vh; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--dim); margin-bottom: 2vh; margin-top: 3vh;
   }
   .section-title:first-of-type { margin-top: 0; }
 
-  /* Выбор темы */
-  .theme-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
-  }
+  .theme-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2vh; }
   .theme-swatch {
-    aspect-ratio: 1;
-    border-radius: 18px;
-    cursor: pointer;
+    aspect-ratio: 16/9; border-radius: 12px; cursor: pointer;
     display: flex; align-items: flex-end; justify-content: center;
-    padding-bottom: 12px;
-    font-size: 12px; font-weight: 600;
-    color: #fff;
-    position: relative;
+    padding-bottom: 1.5vh; font-size: 1.5vh; font-weight: 600;
+    color: #fff; position: relative;
     transition: all 0.25s var(--ease-ps5);
-    border: 2px solid transparent;
+    border: 3px solid transparent;
     overflow: hidden;
   }
   .theme-swatch::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.6) 100%);
-    pointer-events: none;
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.7) 100%);
   }
   .theme-swatch span { position: relative; z-index: 2; }
-  .theme-swatch:hover { transform: translateY(-4px) scale(1.04); }
-  .theme-swatch.active {
-    border-color: #fff;
-    box-shadow: 0 0 0 3px rgba(255,255,255,0.15), 0 10px 30px rgba(0,0,0,0.5);
-  }
+  .theme-swatch:hover { transform: translateY(-4px) scale(1.02); }
+  .theme-swatch.active { border-color: #fff; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
   .theme-swatch.active::before {
-    content: '✓';
-    position: absolute; top: 10px; right: 12px;
-    font-size: 16px; color: #fff; z-index: 3;
-    text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+    content: '✓'; position: absolute; top: 10px; right: 12px;
+    font-size: 2vh; color: #fff; z-index: 3; text-shadow: 0 2px 6px rgba(0,0,0,0.8);
   }
 
-  /* Переключатель */
-  .toggle-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-  }
-  .toggle-row:last-child { border-bottom: none; }
-  .toggle-label { font-size: 15px; }
-  .toggle-desc { font-size: 12px; color: var(--dim); margin-top: 3px; }
-
-  .toggle {
-    width: 52px; height: 30px; border-radius: 15px;
-    background: rgba(255,255,255,0.12);
-    position: relative; cursor: pointer;
-    transition: background 0.3s var(--ease-ps5);
-    flex-shrink: 0;
-  }
-  .toggle::after {
-    content: '';
-    position: absolute; top: 3px; left: 3px;
-    width: 24px; height: 24px; border-radius: 50%;
-    background: #fff;
-    transition: transform 0.3s var(--ease-ps5);
-  }
-  .toggle.on { background: var(--accent); }
-  .toggle.on::after { transform: translateX(22px); }
-
-  /* Кнопки внизу */
-  .settings-actions {
-    display: flex; gap: 12px; margin-top: 32px;
-  }
+  .settings-actions { display: flex; gap: 2vw; margin-top: 4vh; }
   .btn {
-    flex: 1; padding: 15px; border-radius: 12px; border: none;
-    font-size: 15px; font-weight: 600; cursor: pointer;
+    flex: 1; padding: 2vh; border-radius: 12px; border: none;
+    font-size: 1.8vh; font-weight: 600; cursor: pointer;
     font-family: inherit; transition: all 0.2s var(--ease-ps5);
   }
-  .btn-ghost { background: rgba(255,255,255,0.08); color: #fff; }
-  .btn-ghost:hover { background: rgba(255,255,255,0.14); }
-  .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 8px 24px var(--accent-glow); }
+  .btn-ghost { background: rgba(255,255,255,0.1); color: #fff; }
+  .btn-ghost:hover { background: rgba(255,255,255,0.2); }
+  .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 10px 30px var(--accent-glow); }
   .btn-primary:hover { transform: translateY(-2px); }
 
   /* ================= TOAST ================= */
   .toast {
-    position: fixed; bottom: 90px; left: 50%;
+    position: fixed; bottom: 15vh; left: 50%;
     transform: translateX(-50%) translateY(20px);
     background: rgba(20,20,26,0.98);
-    border: 1px solid rgba(255,255,255,0.12);
-    padding: 14px 28px; border-radius: 30px;
-    font-size: 14px; opacity: 0; pointer-events: none;
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 2vh 4vh; border-radius: 40px;
+    font-size: 1.8vh; opacity: 0; pointer-events: none;
     transition: all 0.3s var(--ease-ps5);
     z-index: 1000; white-space: nowrap;
   }
@@ -316,6 +282,7 @@
 <div id="main">
   <div class="bg" id="bg"></div>
 
+  <!-- Верхняя панель -->
   <div class="topbar">
     <div class="brand"><span class="dot"></span>MOROZ LAUNCHER</div>
     <div class="top-right">
@@ -325,15 +292,18 @@
     </div>
   </div>
 
+  <!-- Центральный герой -->
   <div class="hero" id="hero">
     <div class="hero-icon" id="heroIcon">📱</div>
     <div class="hero-name" id="heroName">Загрузка...</div>
   </div>
 
+  <!-- Карусель приложений -->
   <div class="carousel-wrap">
     <div class="carousel" id="carousel"></div>
   </div>
 
+  <!-- Нижняя панель -->
   <div class="bottombar">
     <div class="hints">
       <div class="hint"><span class="key">◀ ▶</span> выбор</div>
@@ -348,33 +318,10 @@
 <div class="modal" id="settingsModal">
   <div class="settings-card">
     <h2>Настройки</h2>
-    <div class="sub">Персонализируй свой лаунчер</div>
+    <div class="sub">Персонализируй MorozLauncherTV</div>
 
     <div class="section-title">Цветовая тема</div>
     <div class="theme-grid" id="themeGrid"></div>
-
-    <div class="section-title">Параметры</div>
-    <div class="toggle-row">
-      <div>
-        <div class="toggle-label">Показывать часы</div>
-        <div class="toggle-desc">Отображать время в верхней панели</div>
-      </div>
-      <div class="toggle on" data-toggle="clock"></div>
-    </div>
-    <div class="toggle-row">
-      <div>
-        <div class="toggle-label">Анимации</div>
-        <div class="toggle-desc">Плавные переходы и эффекты</div>
-      </div>
-      <div class="toggle on" data-toggle="anim"></div>
-    </div>
-    <div class="toggle-row">
-      <div>
-        <div class="toggle-label">Показывать фон</div>
-        <div class="toggle-desc">Цветное свечение за иконкой</div>
-      </div>
-      <div class="toggle on" data-toggle="bg"></div>
-    </div>
 
     <div class="settings-actions">
       <button class="btn btn-ghost" id="btnCloseSettings">Закрыть</button>
@@ -402,12 +349,7 @@ const THEMES = [
 
 /* ================= СОСТОЯНИЕ ================= */
 const STORAGE_KEY = 'moroz_launcher_settings';
-let settings = {
-  theme: 'blue',
-  clock: true,
-  anim: true,
-  bg: true,
-};
+let settings = { theme: 'blue' };
 
 function loadSettings() {
   try {
@@ -424,29 +366,9 @@ function saveSettings() {
 
 function applySettings() {
   document.body.dataset.theme = settings.theme;
-
-  // Часы
-  document.getElementById('clock').style.display = settings.clock ? '' : 'none';
-
-  // Анимации (отключаем transition у крупных элементов)
-  document.documentElement.style.setProperty(
-    '--ease-ps5',
-    settings.anim ? 'cubic-bezier(0.2, 0.8, 0.2, 1)' : 'linear'
-  );
-
-  // Фон
-  const bg = document.getElementById('bg');
-  bg.style.display = settings.bg ? '' : 'none';
-
-  // Обновляем активный свотч
   document.querySelectorAll('.theme-swatch').forEach(el => {
     el.classList.toggle('active', el.dataset.theme === settings.theme);
   });
-  // Обновляем тогглы
-  document.querySelectorAll('.toggle').forEach(el => {
-    el.classList.toggle('on', !!settings[el.dataset.toggle]);
-  });
-  // Меняем фон под текущий цвет
   updateBgForTheme();
 }
 
@@ -478,18 +400,18 @@ const bgEl = document.getElementById('bg');
 
 function renderIcon(icon) {
   if (icon && icon.startsWith('data:image')) return `<img src="${icon}" alt="">`;
-  return '📱';
+  return '<span style="font-size: 3vh;">📱</span>';
 }
 
 function updateBgForTheme() {
   const theme = THEMES.find(t => t.id === settings.theme);
   const c = theme ? theme.color : '#0070d1';
-  bgEl.style.background = `radial-gradient(circle at 50% 35%, ${c}55 0%, #050508 70%)`;
+  bgEl.style.background = `radial-gradient(circle at 50% 45%, ${c}44 0%, #050508 70%)`;
 }
 
 function initLauncher() {
   if (!window.AndroidBridge) {
-    heroName.textContent = 'Мост не найден';
+    heroName.textContent = 'Ошибка моста';
     return;
   }
 
@@ -514,7 +436,6 @@ function initLauncher() {
     tile.className = 'tile';
     tile.innerHTML = renderIcon(app.icon);
     tile.addEventListener('click', () => setCurrent(i));
-    tile.addEventListener('dblclick', () => launch(app));
     carousel.appendChild(tile);
   });
 
@@ -586,12 +507,10 @@ document.getElementById('btnOpenAndroid').addEventListener('click', () => {
   else toast('Недоступно');
 });
 
-// Закрытие кликом по фону
 settingsModal.addEventListener('click', (e) => {
   if (e.target === settingsModal) closeSettings();
 });
 
-// Рендер свотчей тем
 const themeGrid = document.getElementById('themeGrid');
 THEMES.forEach(t => {
   const el = document.createElement('div');
@@ -607,16 +526,6 @@ THEMES.forEach(t => {
   themeGrid.appendChild(el);
 });
 
-// Тогглы
-document.querySelectorAll('.toggle').forEach(el => {
-  el.addEventListener('click', () => {
-    const key = el.dataset.toggle;
-    settings[key] = !settings[key];
-    saveSettings();
-  });
-});
-
-/* ================= TOAST ================= */
 let toastTimer;
 function toast(msg) {
   const t = document.getElementById('toast');
