@@ -5,129 +5,367 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>MorozLauncherTV</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  /* =========================================
+     ПОЛНОЕ ОТКЛЮЧЕНИЕ АНИМАЦИЙ
+     ========================================= */
+  * { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent; 
+    transition: none !important; 
+    animation: none !important;
+  }
   
   :root { 
-    --accent: #0070d1; 
-    --accent-glow: rgba(0,112,209,0.4); 
+    --ps-blue: #0070d1; 
     --text: #ffffff; 
-    --dim: rgba(255,255,255,0.6); 
-    --bg-color: #0a0a0f;
+    --dim: rgba(255, 255, 255, 0.5); 
   }
 
   /* ТЕМЫ */
-  body[data-theme="blue"]   { --accent: #0070d1; --accent-glow: rgba(0,112,209,0.4); }
-  body[data-theme="red"]    { --accent: #e50914; --accent-glow: rgba(229,9,20,0.4); }
-  body[data-theme="green"]  { --accent: #1db954; --accent-glow: rgba(29,185,84,0.4); }
-  body[data-theme="purple"] { --accent: #9146ff; --accent-glow: rgba(145,70,255,0.4); }
+  body[data-theme="blue"]   { --ps-blue: #0070d1; }
+  body[data-theme="red"]    { --ps-blue: #e50914; }
+  body[data-theme="green"]  { --ps-blue: #1db954; }
+  body[data-theme="purple"] { --ps-blue: #9146ff; }
+
+  html, body { 
+    width: 100vw; 
+    height: 100vh; 
+    overflow: hidden; 
+    background: #000; 
+    color: var(--text); 
+    font-family: 'Segoe UI', -apple-system, sans-serif; 
+    user-select: none; 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+  }
+
+  /* =========================================
+     ГЛУБОКИЙ ФОН PS5
+     ========================================= */
+  .bg-base {
+    position: absolute; 
+    inset: 0; 
+    z-index: 0;
+    background: radial-gradient(circle at 50% 30%, #0a1730 0%, #000000 70%);
+  }
   
-  /* РЕЖИМЫ */
-  body[data-mode="cinema"] { --bg-color: #050000; filter: sepia(0.3) contrast(1.1); }
-  body[data-mode="games"]  { --bg-color: #000a12; }
-  body[data-mode="night"]  { --bg-color: #000000; filter: brightness(0.6) contrast(1.2); }
+  .bg-ambient {
+    position: absolute; 
+    top: 30%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    width: 60vw; 
+    height: 60vh;
+    background: radial-gradient(circle, var(--ps-blue) 0%, transparent 70%);
+    z-index: 1; 
+    pointer-events: none;
+    opacity: 0.15; /* Мягкое свечение от темы */
+  }
 
-  /* КАСТОМНЫЙ КУРСОР */
-  body { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="%23ffffff" opacity="0.8"/><circle cx="12" cy="12" r="10" fill="%230070d1" opacity="0.4"/></svg>') 12 12, auto; }
+  #customWallpaper { 
+    position: absolute; 
+    inset: 0; 
+    z-index: 0; 
+    background-size: cover; 
+    background-position: center; 
+    display: none; 
+    opacity: 0.15; 
+  }
 
-  html, body { width: 100vw; height: 100vh; overflow: hidden; background: var(--bg-color); color: var(--text); font-family: 'Segoe UI', sans-serif; user-select: none; position: fixed; top: 0; left: 0; display: flex; flex-direction: column; transition: background 0.5s, filter 0.5s; }
+  /* =========================================
+     ВЕРХНЯЯ ПАНЕЛЬ (Как на PS5)
+     ========================================= */
+  .topbar { 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 8vh; 
+    display: flex; 
+    align-items: center; 
+    justify-content: flex-end; /* Все элементы справа */
+    padding: 0 4vw; 
+    z-index: 20; 
+  }
+
+  .top-right { 
+    display: flex; 
+    align-items: center; 
+    gap: 2.5vw; 
+  }
   
-  #customWallpaper { position: absolute; inset: 0; z-index: 0; background-size: cover; background-position: center; display: none; opacity: 0.3; }
-  .bg-ambient { position: absolute; inset: 0; z-index: 1; background: radial-gradient(circle at 50% 40%, rgba(255,255,255,0.03) 0%, transparent 70%); pointer-events: none; }
-  .bg-glow { position: absolute; top: 50%; left: 50%; width: 100vw; height: 100vh; transform: translate(-50%, -50%); z-index: 1; opacity: 0.3; background: radial-gradient(circle at center, var(--accent) 0%, transparent 60%); transition: background 0.5s; pointer-events: none; }
-
-  /* ЗАГРУЗКА */
-  #splash { position: fixed; inset: 0; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0a0a0f; transition: opacity 0.5s; }
-  #splash.hide { opacity: 0; pointer-events: none; }
-  .splash-logo { font-size: 3vw; font-weight: 300; letter-spacing: 0.8vw; }
-
-  /* ГЛАВНЫЙ ЭКРАН */
-  #main { position: relative; z-index: 2; width: 100%; height: 100%; opacity: 0; transition: opacity 0.5s; display: flex; flex-direction: column; }
-  #main.show { opacity: 1; }
-
-  .topbar { position: relative; width: 100%; height: 10vh; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 4vw; z-index: 20; background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%); }
-  .brand { display: flex; align-items: center; gap: 1vw; font-size: 1.8vh; font-weight: 600; }
-  .brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
-  .top-right { display: flex; align-items: center; gap: 2vw; }
+  .weather-box { font-size: 1.6vh; font-weight: 400; color: var(--dim); }
+  .battery-box { font-size: 1.6vh; color: var(--dim); }
   
-  .weather-box { display: flex; align-items: center; gap: 0.5vw; font-size: 2vh; font-weight: 400; color: var(--text); }
-  .battery-box { display: flex; align-items: center; gap: 0.5vw; font-size: 2vh; color: var(--dim); }
-  .welcome-text { font-size: 2vh; font-weight: 300; color: var(--text); margin-right: 1vw; }
-  .clock-box { text-align: right; line-height: 1.2; }
-  .clock { font-size: 2.5vh; font-weight: 300; }
-  .date { font-size: 1.5vh; color: var(--dim); }
-  .avatar { width: 5vh; height: 5vh; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #333); display: flex; align-items: center; justify-content: center; font-size: 2.2vh; font-weight: bold; background-size: cover; background-position: center; border: 2px solid rgba(255,255,255,0.2); }
-
-  .content-area { flex: 1; position: relative; display: flex; flex-direction: column; justify-content: center; }
+  /* Часы и дата (справа, как на консоли) */
+  .clock-box { 
+    text-align: right; 
+    line-height: 1.1; 
+  }
+  .clock { font-size: 2vh; font-weight: 400; }
+  .date { font-size: 1.2vh; color: var(--dim); }
   
-  /* КАРУСЕЛЬ */
-  .carousel-wrap { position: absolute; bottom: 8vh; left: 0; width: 100%; height: 18vh; display: flex; align-items: center; z-index: 15; overflow: hidden; }
-  .carousel { display: flex; align-items: center; gap: 2vh; padding: 0 50vw; }
+  /* Аватарка с фирменной белой обводкой */
+  .avatar { 
+    width: 4.5vh; 
+    height: 4.5vh; 
+    border-radius: 50%; 
+    background: linear-gradient(135deg, var(--ps-blue), #222); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 1.8vh; 
+    font-weight: 700; 
+    background-size: cover; 
+    background-position: center; 
+    border: 2px solid #fff; 
+  }
+
+  /* =========================================
+     ЦЕНТРАЛЬНЫЙ БЛОК (Иконка и Название)
+     ========================================= */
+  .center-stage { 
+    position: absolute; 
+    top: 35%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 3vh; 
+    z-index: 10; 
+    pointer-events: none; 
+  }
+
+  .hero-icon { 
+    width: 18vh; 
+    height: 18vh; 
+    border-radius: 3.5vh; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    background: transparent; 
+    box-shadow: 0 20px 50px rgba(0,0,0,0.9); /* Тень, парящая над фоном */
+    overflow: hidden; 
+  }
   
-  .tile { width: 12vh; height: 12vh; border-radius: 2.5vh; display: flex; align-items: center; justify-content: center; background: #1a1a24; box-shadow: 0 5px 15px rgba(0,0,0,0.5); flex-shrink: 0; overflow: hidden; opacity: 0.6; border: 2px solid transparent; }
-  .tile img { width: 100%; height: 100%; object-fit: cover; border-radius: 2.5vh; }
-  .tile.active { width: 16vh; height: 16vh; border-radius: 3vh; box-shadow: 0 0 0 3px #fff, 0 10px 30px var(--accent-glow); transform: translateY(-10px); opacity: 1; }
-  .tile.dim { opacity: 0.3; transform: scale(0.85); }
-
-  .sys-tile { background: #23232f; border: 2px dashed rgba(255,255,255,0.2); }
-  .sys-tile span { font-size: 6vh; }
-
-  .hero { display: flex; flex-direction: column; align-items: center; gap: 2vh; transform: translateY(-10%); z-index: 10; }
-  .hero-icon { width: 18vh; height: 18vh; border-radius: 3.5vh; display: flex; align-items: center; justify-content: center; background: #1a1a24; box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 40px var(--accent-glow); overflow: hidden; border: 2px solid rgba(255,255,255,0.1); }
-  .hero-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 3.5vh; }
+  .hero-icon img { width: 100%; height: 100%; object-fit: cover; }
   .hero-icon span { font-size: 8vh; }
-  .hero-name { font-size: 3.5vh; font-weight: 300; text-shadow: 0 4px 10px rgba(0,0,0,1); }
-
-  .bottombar { position: relative; width: 100%; height: 8vh; flex-shrink: 0; display: flex; align-items: center; padding: 0 4vw; background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 100%); }
-  .hints { display: flex; gap: 2vw; font-size: 1.8vh; color: var(--dim); white-space: nowrap; }
-  .key { display: inline-flex; align-items: center; justify-content: center; min-width: 2.5vh; height: 2.5vh; padding: 0 1vh; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; font-size: 1.2vh; color: #fff; font-weight: 600; margin-right: 0.5vw;}
-
-  /* МОДАЛЬНЫЕ ОКНА */
-  .modal-overlay { position: fixed; inset: 0; z-index: 900; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
-  .modal-overlay.show { opacity: 1; pointer-events: auto; }
-  .modal-box { background: #121218; border: 1px solid rgba(255,255,255,0.15); border-radius: 2vh; padding: 4vh; width: 75vw; max-width: 1000px; display: flex; flex-direction: column; gap: 2vh; transform: scale(0.95); transition: transform 0.2s; }
-  .modal-overlay.show .modal-box { transform: scale(1); }
-  .modal-box h2 { font-size: 3vh; font-weight: 300; margin-bottom: 1vh; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 2vh;}
   
-  .section-title { font-size: 1.5vh; color: var(--dim); text-transform: uppercase; letter-spacing: 2px; margin-top: 1vh; margin-bottom: 1vh; }
-  .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2vw; }
-  .menu-btn { background: #1a1a24; border: 1px solid rgba(255,255,255,0.1); border-radius: 1.5vh; padding: 2vh; color: #fff; font-size: 1.6vh; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1vh; transition: background 0.2s; }
-  .menu-btn:hover, .menu-btn:focus { background: var(--accent); outline: none; transform: scale(1.05); }
-  .menu-btn span { font-size: 3vh; }
+  .hero-name { 
+    font-size: 3vh; 
+    font-weight: 400; 
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.8); 
+  }
 
-  .toast { position: fixed; bottom: 12vh; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a1a24; border: 1px solid rgba(255,255,255,0.15); padding: 1.5vh 3vw; border-radius: 40px; font-size: 2vh; opacity: 0; pointer-events: none; transition: all 0.3s; z-index: 1000; }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  /* =========================================
+     КАРУСЕЛЬ (Нижняя панель приложений)
+     ========================================= */
+  .carousel-wrap { 
+    position: absolute; 
+    bottom: 8vh; /* Прижата к низу */
+    left: 0; 
+    width: 100%; 
+    height: 14vh; 
+    display: flex; 
+    align-items: center; 
+    z-index: 15; 
+    overflow: hidden; 
+  }
+
+  .carousel { 
+    display: flex; 
+    align-items: center; 
+    gap: 2vw; 
+    padding: 0 50vw; 
+  }
+  
+  .tile { 
+    width: 8vh; 
+    height: 8vh; 
+    border-radius: 2vh; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    background: rgba(255,255,255,0.1); 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5); 
+    flex-shrink: 0; 
+    overflow: hidden; 
+    opacity: 0.4; /* Неактивные иконки тусклые */
+    border: 2px solid transparent;
+  }
+
+  .tile img { width: 100%; height: 100%; object-fit: cover; }
+  
+  /* Активная иконка (в точности как на PS5) */
+  .tile.active { 
+    opacity: 1; 
+    border-color: #ffffff; 
+    box-shadow: 0 0 20px rgba(255,255,255,0.4), 0 10px 30px rgba(0,0,0,0.8);
+  }
+  .tile.active img { border-radius: 1.5vh; padding: 2px; }
+
+  /* Настройки (системная иконка) */
+  .sys-tile { background: #222; border: 2px dashed rgba(255,255,255,0.3); }
+  .sys-tile span { font-size: 4vh; }
+
+  /* =========================================
+     НИЖНЯЯ ПАНЕЛЬ ПОДСКАЗОК
+     ========================================= */
+  .bottombar { 
+    position: absolute; 
+    bottom: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 6vh; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    z-index: 20; 
+  }
+
+  .hints { display: flex; gap: 3vw; font-size: 1.4vh; color: #999; }
+  .hint { display: flex; align-items: center; gap: 0.5vw; }
+  
+  /* Круглые кнопки, как на геймпаде */
+  .key { 
+    display: inline-flex; 
+    align-items: center; 
+    justify-content: center; 
+    width: 2.2vh; 
+    height: 2.2vh; 
+    background: #333; 
+    border-radius: 50%; 
+    font-size: 1.1vh; 
+    color: #fff; 
+    font-weight: bold; 
+  }
+
+  /* =========================================
+     МОДАЛЬНОЕ ОКНО НАСТРОЕК
+     ========================================= */
+  .modal-overlay { 
+    position: fixed; 
+    inset: 0; 
+    z-index: 900; 
+    background: rgba(0,0,0,0.85); 
+    display: none; 
+    align-items: center; 
+    justify-content: center; 
+  }
+  .modal-overlay.show { display: flex; }
+
+  .modal-box { 
+    background: #111; 
+    border: 1px solid #333; 
+    border-radius: 1.5vh; 
+    padding: 3vh; 
+    width: 75vw; 
+    max-width: 900px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 2vh; 
+  }
+  
+  .modal-box h2 { 
+    font-size: 2.2vh; 
+    font-weight: 300; 
+    text-align: center; 
+    border-bottom: 1px solid #333; 
+    padding-bottom: 1.5vh;
+  }
+
+  .section-title { 
+    font-size: 1.2vh; 
+    color: var(--dim); 
+    text-transform: uppercase; 
+    letter-spacing: 1.5px; 
+    margin-top: 1vh; 
+  }
+
+  .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5vw; }
+  
+  .menu-btn { 
+    background: #222; 
+    border: 1px solid #333; 
+    border-radius: 1vh; 
+    padding: 1.5vh; 
+    color: #fff; 
+    font-size: 1.4vh; 
+    cursor: pointer; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 1vh; 
+  }
+  
+  .menu-btn:hover, .menu-btn:focus { 
+    background: #444; 
+    outline: none; 
+    border-color: #fff;
+  }
+  .menu-btn span { font-size: 2.2vh; }
+
+  /* Уведомления */
+  .toast { 
+    position: fixed; 
+    bottom: 10vh; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    background: #111; 
+    border: 1px solid #333; 
+    padding: 1.5vh 2.5vw; 
+    border-radius: 1vh; 
+    font-size: 1.6vh; 
+    opacity: 0; 
+    pointer-events: none; 
+    z-index: 1000; 
+  }
+  .toast.show { opacity: 1; }
+
+  .update-banner {
+    display: none; 
+    background: #0070d1;
+    color: white; 
+    padding: 1vh 3vw; 
+    border-radius: 1vh;
+    text-align: center; 
+    font-size: 1.6vh; 
+    cursor: pointer;
+    margin: 0 4vw;
+    position: absolute;
+    top: 10vh;
+    width: 92vw;
+  }
 
   .hidden-input { display: none; }
   .hidden { display: none !important; }
-
-  /* Баннер обновления */
-  .update-banner {
-    display: none; background: linear-gradient(90deg, #0070d1, #00a8e8);
-    color: white; padding: 1.5vh 3vw; border-radius: 1vh;
-    text-align: center; font-size: 1.8vh; cursor: pointer;
-    margin: 0 4vw 2vh 4vw; box-shadow: 0 10px 30px rgba(0,112,209,0.4);
-  }
 </style>
 </head>
-<body data-theme="blue" data-mode="default">
+<body data-theme="blue">
 
-<div id="customWallpaper"></div>
+<div class="bg-base"></div>
 <div class="bg-ambient"></div>
-<div class="bg-glow" id="bgGlow"></div>
+<div id="customWallpaper"></div>
 
-<!-- ЗАГРУЗКА -->
-<div id="splash">
-  <div class="splash-logo">MorozLauncherTV</div>
+<!-- Загрузка -->
+<div id="splash" style="position:fixed; inset:0; z-index:1000; display:flex; align-items:center; justify-content:center; background:#000;">
+  <div style="font-size:2vw; font-weight:300; letter-spacing:0.5vw; color:#fff;">MorozLauncherTV</div>
 </div>
 
-<!-- ГЛАВНЫЙ ЭКРАН -->
-<div id="main" class="hidden">
+<!-- Главный экран -->
+<div id="main" class="hidden" style="width:100%; height:100%; position:relative;">
+  
+  <!-- Верхняя панель -->
   <div class="topbar">
-    <div class="brand"><span class="dot"></span>MOROZ LAUNCHER</div>
     <div class="top-right">
       <div class="weather-box" id="weatherBox">🌤 --°</div>
       <div class="battery-box">🔋 <span id="batteryLevel">--%</span></div>
-      <div class="welcome-text" id="welcomeMsg">Привет!</div>
       <div class="clock-box" id="clockBox">
         <div class="clock" id="clock">00:00</div>
         <div class="date" id="date">Дата</div>
@@ -140,42 +378,34 @@
     ⬇️ Доступно обновление! Нажмите для скачивания.
   </div>
 
-  <div class="content-area">
-    <div class="hero" id="hero">
-      <div class="hero-icon" id="heroIcon">📱</div>
-      <div class="hero-name" id="heroName">Загрузка...</div>
-    </div>
-    <div class="carousel-wrap">
-      <div class="carousel" id="carousel"></div>
-    </div>
+  <!-- Центральный блок -->
+  <div class="center-stage">
+    <div class="hero-icon" id="heroIcon">📱</div>
+    <div class="hero-name" id="heroName">Загрузка...</div>
   </div>
 
+  <!-- Карусель -->
+  <div class="carousel-wrap">
+    <div class="carousel" id="carousel"></div>
+  </div>
+
+  <!-- Нижняя панель -->
   <div class="bottombar">
     <div class="hints">
-      <div class="hint"><span class="key">◀ ▶</span> выбор</div>
-      <div class="hint"><span class="key">OK</span> открыть</div>
+      <div class="hint"><span class="key">◀</span> <span class="key">▶</span> выбор</div>
+      <div class="hint"><span class="key">X</span> открыть</div>
     </div>
   </div>
 </div>
 
-<!-- НАСТРОЙКИ -->
+<!-- Настройки -->
 <div class="modal-overlay" id="settingsMenu">
   <div class="modal-box">
     <h2>Настройки</h2>
-    
     <div class="section-title">Обновление</div>
     <div class="menu-grid">
       <div class="menu-btn" onclick="checkForUpdates(true)">🔄 Проверить обновления</div>
     </div>
-
-    <div class="section-title">Режимы работы</div>
-    <div class="menu-grid">
-      <div class="menu-btn" onclick="setMode('default')">🌓 Обычный</div>
-      <div class="menu-btn" onclick="setMode('cinema')">🍿 Кино</div>
-      <div class="menu-btn" onclick="setMode('games')">🎮 Игры</div>
-      <div class="menu-btn" onclick="setMode('night')">🌙 Ночь</div>
-    </div>
-
     <div class="section-title">Цветовая тема</div>
     <div class="menu-grid">
       <div class="menu-btn" onclick="setTheme('blue')">🔵 Синяя</div>
@@ -183,49 +413,36 @@
       <div class="menu-btn" onclick="setTheme('green')">🟢 Зеленая</div>
       <div class="menu-btn" onclick="setTheme('purple')">🟣 Фиолет</div>
     </div>
-
     <div class="section-title">Обои и Аватар</div>
     <div class="menu-grid">
       <div class="menu-btn" onclick="document.getElementById('fileWallpaper').click()">📸 Обои</div>
       <div class="menu-btn" onclick="document.getElementById('fileAvatar').click()">🖼 Аватар</div>
-      <div class="menu-btn" onclick="resetWallpaper()">🗑 Сброс фото</div>
+      <div class="menu-btn" onclick="resetWallpaper()">🗑 Сброс</div>
       <div class="menu-btn" onclick="action('android')">🤖 Android</div>
     </div>
-
-    <div class="section-title">Система</div>
-    <div class="menu-grid">
-      <div class="menu-btn" onclick="action('reset')">🔄 Сброс лаунчера</div>
-    </div>
-
-    <div class="menu-btn" style="margin-top: 2vh; background: rgba(255,255,255,0.1);" onclick="closeModals()">🔙 Закрыть</div>
+    <div class="menu-btn" style="margin-top: 2vh; background: #333;" onclick="closeModals()">🔙 Закрыть</div>
   </div>
 </div>
 
 <input type="file" id="fileWallpaper" accept="image/*" class="hidden-input" onchange="handleWallpaperUpload(event)">
 <input type="file" id="fileAvatar" accept="image/*" class="hidden-input" onchange="handleAvatarUpload(event)">
-
 <div class="toast" id="toast"></div>
 
 <script>
-  // === НАСТРОЙКИ РЕПОЗИТОРИЯ ===
   const GITHUB_USER = "zaharmorozov509-prog";
   const GITHUB_REPO = "MorozLauncherTV";
   const CURRENT_VERSION = "2.1.0";
 
-  // === СОСТОЯНИЕ ===
   let settings = {
-    name: localStorage.getItem('userName') || 'Друг', // Имя по умолчанию
+    name: localStorage.getItem('userName') || 'Друг',
     theme: localStorage.getItem('theme') || 'blue',
-    mode: localStorage.getItem('mode') || 'default'
   };
   
   let apps = [];
   let currentIndex = 0;
   let updateUrl = null;
 
-  // Применяем настройки
   document.body.dataset.theme = settings.theme;
-  document.body.dataset.mode = settings.mode;
 
   const savedWallpaper = localStorage.getItem('customWallpaper');
   if (savedWallpaper) {
@@ -233,9 +450,8 @@
     document.getElementById('customWallpaper').style.display = 'block';
   }
 
-  // === ПРОВЕРКА ОБНОВЛЕНИЙ ===
   async function checkForUpdates(manual = false) {
-    if (manual) toast('Проверка обновлений...');
+    if (manual) toast('Проверка...');
     try {
       const response = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest`);
       const data = await response.json();
@@ -255,75 +471,42 @@
         if (manual) toast('У вас последняя версия!');
       }
     } catch (e) {
-      if (manual) toast('Ошибка проверки обновлений');
+      if (manual) toast('Ошибка проверки');
     }
   }
 
   function openUpdateLink() {
-    if (!updateUrl) return;
-    toast('Открываем браузер для скачивания...');
-    window.open(updateUrl, '_blank');
+    if (updateUrl) window.open(updateUrl, '_blank');
   }
 
   setTimeout(() => checkForUpdates(false), 3000);
 
-  // === АВТО-НОЧНОЙ РЕЖИМ ===
-  function checkNightMode() {
-    if (settings.mode !== 'default') return;
-    const hour = new Date().getHours();
-    if (hour >= 22 || hour < 7) {
-      document.body.dataset.mode = 'night';
-    } else {
-      document.body.dataset.mode = 'default';
-    }
-  }
-  checkNightMode();
-  setInterval(checkNightMode, 60000);
-
-  // === ПОГОДА ===
   async function fetchWeather() {
     try {
       const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=55.75&longitude=37.61&current_weather=true');
       const data = await response.json();
       const temp = Math.round(data.current_weather.temperature);
-      const code = data.current_weather.weathercode;
-      
-      let icon = '☀️';
-      if (code >= 1 && code <= 3) icon = '⛅';
-      if (code >= 45 && code <= 48) icon = '🌫️';
-      if (code >= 51 && code <= 67) icon = '🌧️';
-      if (code >= 71 && code <= 77) icon = '❄️';
-      if (code >= 95) icon = '⛈️';
-
-      document.getElementById('weatherBox').innerText = `${icon} +${temp}°`;
-    } catch (e) {
-      document.getElementById('weatherBox').innerText = `🌤 --°`;
-    }
+      document.getElementById('weatherBox').innerText = `🌤 +${temp}°`;
+    } catch (e) { }
   }
   fetchWeather();
-  setInterval(fetchWeather, 1800000);
 
-  // === ЗАРЯД ПУЛЬТА ===
   if (window.AndroidBridge && window.AndroidBridge.getRemoteBattery) {
     try {
       const level = window.AndroidBridge.getRemoteBattery();
       document.getElementById('batteryLevel').innerText = (level > 0) ? `${level}%` : `--%`;
-    } catch(e) { document.getElementById('batteryLevel').innerText = `--%`; }
+    } catch(e) { }
   }
 
-  // === СТАРТ (СРАЗУ В ЛАУНЧЕР) ===
   window.onload = () => {
     setTimeout(() => {
-      document.getElementById('splash').classList.add('hide');
-      setTimeout(() => document.getElementById('splash').style.display = 'none', 500);
+      document.getElementById('splash').style.display = 'none';
       startMainApp();
-    }, 1500); // 1.5 секунды на заставку "By Moroz"
+    }, 1000);
   };
 
   function startMainApp() {
     document.getElementById('main').classList.remove('hidden');
-    document.getElementById('main').classList.add('show');
-    document.getElementById('welcomeMsg').innerText = `Привет, ${settings.name}!`;
     
     const avatarEl = document.getElementById('avatarImg');
     const savedAvatar = localStorage.getItem('customAvatar');
@@ -360,7 +543,7 @@
         tile.classList.add('sys-tile');
         tile.innerHTML = '<span>⚙️</span>';
       } else {
-        tile.innerHTML = (app.icon && app.icon.startsWith('data:image')) ? `<img src="${app.icon}">` : '<span style="font-size: 4vh;">📱</span>';
+        tile.innerHTML = (app.icon && app.icon.startsWith('data:image')) ? `<img src="${app.icon}">` : '<span style="font-size: 3vh;">📱</span>';
       }
       
       tile.onclick = () => { setCurrent(i); openApp(app); };
@@ -378,14 +561,13 @@
       heroIcon.innerHTML = '<span>⚙️</span>';
       heroName.textContent = app.name;
     } else {
-      heroIcon.innerHTML = (app.icon && app.icon.startsWith('data:image')) ? `<img src="${app.icon}">` : '<span style="font-size: 8vh;">📱</span>';
+      heroIcon.innerHTML = (app.icon && app.icon.startsWith('data:image')) ? `<img src="${app.icon}">` : '<span style="font-size: 6vh;">📱</span>';
       heroName.textContent = app.name;
     }
 
     const tiles = carousel.querySelectorAll('.tile');
     tiles.forEach((tile, idx) => {
       tile.classList.toggle('active', idx === currentIndex);
-      tile.classList.toggle('dim', Math.abs(idx - currentIndex) > 2);
     });
 
     const activeTile = tiles[currentIndex];
@@ -409,7 +591,6 @@
     document.getElementById('date').textContent = now.toLocaleDateString('ru-RU', { weekday: 'short', day: 'numeric', month: 'short' });
   }
 
-  /* === ФОТО И НАСТРОЙКИ === */
   function handleWallpaperUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -419,7 +600,7 @@
       document.getElementById('customWallpaper').style.backgroundImage = `url(${base64})`;
       document.getElementById('customWallpaper').style.display = 'block';
       localStorage.setItem('customWallpaper', base64);
-      toast('Обои установлены!');
+      toast('Обои установлены');
     };
     reader.readAsDataURL(file);
   }
@@ -434,7 +615,7 @@
       avatarEl.style.backgroundImage = `url(${base64})`;
       avatarEl.innerText = ''; 
       localStorage.setItem('customAvatar', base64);
-      toast('Аватарка обновлена!');
+      toast('Аватарка обновлена');
     };
     reader.readAsDataURL(file);
   }
@@ -466,6 +647,7 @@
     document.getElementById(id).classList.add('show');
     setTimeout(() => { const btn = document.querySelector(`#${id} .menu-btn`); if (btn) btn.focus(); }, 50);
   }
+  
   function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('show')); }
 
   function setTheme(theme) {
@@ -473,19 +655,8 @@
     localStorage.setItem('theme', theme); toast('Тема изменена');
   }
 
-  function setMode(mode) {
-    settings.mode = mode;
-    document.body.dataset.mode = mode;
-    localStorage.setItem('mode', mode);
-    const modeNames = { default: 'Обычный', cinema: 'Кино', games: 'Игры', night: 'Ночь' };
-    toast(`Режим: ${modeNames[mode]}`);
-  }
-
   function action(type) {
     if (type === 'android') { if (window.AndroidBridge) AndroidBridge.openSettings(); }
-    if (type === 'reset') { 
-      if(confirm('Полный сброс лаунчера?')) { localStorage.clear(); location.reload(); }
-    }
   }
 
   let toastTimer;
